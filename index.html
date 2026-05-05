@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isaiah Sanders - home</title>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       FONT: Space Mono (monoglyphic, per spec) + Syne for display flair
+       ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ══════════════════════════════════════════════════
+       CSS CUSTOM PROPERTIES — Global Design Tokens
+       ══════════════════════════════════════════════════ */
+    :root {
+      --space-black:   #03030a;
+      --nebula-deep:   #07051a;
+      --star-white:    #e8e4ff;
+      --glow-blue:     #4fc3f7;
+      --glow-purple:   #b388ff;
+      --glow-gold:     #ffd54f;
+      --glow-orange:   #ff8a65;
+      --glow-green:    #69f0ae;
+      --glow-pink:     #f48fb1;
+      --glow-teal:     #80cbc4;
+      --sun-core:      #fff176;
+      --sun-corona:    #ff8f00;
+      --font-mono:     'Space Mono', monospace;
+      --font-display:  'Syne', sans-serif;
+      --transition-slow: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ══════════════════════════════════════════════════
+       RESET & BASE
+       ══════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: var(--space-black);
+      color: var(--star-white);
+      font-family: var(--font-mono);
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    ::selection {
+      background: var(--glow-purple);
+      color: #fff;
+    }
+
+    /* ══════════════════════════════════════════════════
+       STARFIELD CANVAS — Fixed background layer
+       ══════════════════════════════════════════════════ */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════════════════
+       HERO SECTION — Solar System
+       ══════════════════════════════════════════════════ */
+    #hero {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: clamp(6rem, 12vh, 9rem);
+      overflow: visible;
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+    }
+
+    #hero.faded {
+      opacity: 0;
+      transform: scale(0.92);
+      pointer-events: none;
+    }
+
+    /* Scroll hint arrow */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.5;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--glow-blue);
+      animation: float-hint 2.5s ease-in-out infinite;
+    }
+
+    .scroll-hint::after {
+      content: '↓';
+      font-size: 1.2rem;
+      animation: bounce-down 1.5s ease-in-out infinite;
+    }
+
+    @keyframes float-hint {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 0.8; }
+    }
+
+    @keyframes bounce-down {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(6px); }
+    }
+
+    /* Site title floating above system */
+    .site-title {
+      position: absolute;
+      top: 2.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 3vw, 1.8rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--star-white);
+      text-shadow: 0 0 30px var(--glow-purple), 0 0 60px rgba(179,136,255,0.3);
+      white-space: nowrap;
+      z-index: 20;
+    }
+
+    @media (max-width: 480px) {
+      .site-title {
+        white-space: normal;
+        font-size: clamp(0.8rem, 4vw, 1.1rem);
+        text-align: center;
+        width: 90%;
+        top: 1rem;
+        line-height: 1.3;
+      }
+    }
+
+    .site-title span {
+      color: var(--glow-gold);
+    }
+
+    /* ══════════════════════════════════════════════════
+       SOLAR SYSTEM LAYOUT
+       ══════════════════════════════════════════════════ */
+    #solar-system {
+      position: relative;
+      width: min(90vw, 90vh, 700px);
+      height: min(90vw, 90vh, 700px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Orbital rings */
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(180,170,255,0.18);
+      box-shadow: 0 0 6px 0 rgba(140,120,255,0.07);
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ══════════════════════════════════════════════════
+       SUN
+       ══════════════════════════════════════════════════ */
+    #sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(70px, 11vw, 100px);
+      height: clamp(70px, 11vw, 100px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        #fffde7 0%, #fff176 25%, #ffd54f 50%, #ff8f00 75%, #e65100 100%);
+      box-shadow:
+        0 0 30px 10px rgba(255,213,79,0.6),
+        0 0 60px 20px rgba(255,143,0,0.4),
+        0 0 100px 40px rgba(255,111,0,0.2),
+        inset 0 0 20px rgba(255,255,255,0.3);
+      cursor: pointer;
+      z-index: 50;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: sun-pulse 4s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #sun:hover {
+      transform: translate(-50%, -50%) scale(1.12);
+      box-shadow:
+        0 0 40px 15px rgba(255,213,79,0.8),
+        0 0 80px 30px rgba(255,143,0,0.5),
+        0 0 130px 50px rgba(255,111,0,0.3),
+        inset 0 0 25px rgba(255,255,255,0.4);
+    }
+
+    #sun .planet-label {
+      color: rgba(0,0,0,0.7);
+      text-shadow: none;
+      font-size: 0.55rem;
+    }
+
+    @keyframes sun-pulse {
+      0%, 100% {
+        box-shadow: 0 0 30px 10px rgba(255,213,79,0.6),
+                    0 0 60px 20px rgba(255,143,0,0.4),
+                    0 0 100px 40px rgba(255,111,0,0.2),
+                    inset 0 0 20px rgba(255,255,255,0.3);
+      }
+      50% {
+        box-shadow: 0 0 40px 15px rgba(255,213,79,0.8),
+                    0 0 75px 25px rgba(255,143,0,0.5),
+                    0 0 120px 50px rgba(255,111,0,0.25),
+                    inset 0 0 25px rgba(255,255,255,0.4);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════
+       PLANETS — Generic
+       ══════════════════════════════════════════════════ */
+    .planet-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0 0;
+      /* Each planet sets its own --orbit-radius and --orbit-speed */
+    }
+
+    .planet {
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(-50%, -50%);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      z-index: 30;
+      flex-direction: column;
+    }
+
+    /* Non-spotify planets scale on hover */
+    .planet:not(#planet-spotify):hover {
+      transform: translate(-50%, -50%) scale(1.25);
+      filter: brightness(1.3);
+      z-index: 100;
+    }
+
+    .planet-label {
+      font-family: var(--font-mono);
+      font-size: 0.5rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 0 8px rgba(0,0,0,0.8);
+      white-space: nowrap;
+      text-align: center;
+      line-height: 1.1;
+      margin-top: 2px;
+      pointer-events: none;
+    }
+
+    /* Planet icon emoji (small, rendered over planet) */
+    .planet-icon {
+      font-size: clamp(0.9rem, 2vw, 1.4rem);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* Tooltip on hover */
+    .planet-tooltip {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(7,5,26,0.95);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--star-white);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 200;
+      backdrop-filter: blur(8px);
+    }
+
+    .planet:hover .planet-tooltip {
+      opacity: 1;
+    }
+
+    /* ══════════════════════════════════════════════════
+       INDIVIDUAL PLANET STYLES
+       (color, size, glow, orbital speed — all CSS-driven)
+       ══════════════════════════════════════════════════ */
+
+    /* --- Blog Planet --- */
+    #planet-blog {
+      width: clamp(34px, 5.5vw, 50px);
+      height: clamp(34px, 5.5vw, 50px);
+      background: radial-gradient(circle at 35% 30%,
+        #e1f5fe 0%, #4fc3f7 40%, #0277bd 80%, #01579b 100%);
+      box-shadow: 0 0 15px 5px rgba(79,195,247,0.5), 0 0 30px rgba(79,195,247,0.2);
+    }
+
+
+    /* --- Resume Planet --- */
+    #planet-resume {
+      width: clamp(30px, 4.5vw, 42px);
+      height: clamp(30px, 4.5vw, 42px);
+      background: radial-gradient(circle at 35% 30%,
+        #fff9c4 0%, #f48fb1 40%, #c2185b 80%, #880e4f 100%);
+      box-shadow: 0 0 14px 5px rgba(244,143,177,0.6), 0 0 28px rgba(244,143,177,0.25);
+    }
+
+    /* ══════════════════════════════════════════════════
+   SPOTIFY PLANET — Hover-expand now playing card
+   ══════════════════════════════════════════════════ */
+#planet-spotify {
+  width: clamp(38px, 6vw, 56px);
+  height: clamp(38px, 6vw, 56px);
+  background: radial-gradient(circle at 35% 30%,
+    #e8f5e9 0%, #69f0ae 25%, #1db954 55%, #145a32 100%);
+  box-shadow: 0 0 16px 6px rgba(29,185,84,0.6), 0 0 32px rgba(29,185,84,0.3);
+  /* Expand transition */
+  transition: width 0.45s cubic-bezier(0.34,1.28,0.64,1),
+              height 0.45s cubic-bezier(0.34,1.28,0.64,1),
+              border-radius 0.45s ease,
+              box-shadow 0.35s ease,
+              transform 0.45s cubic-bezier(0.34,1.28,0.64,1);
+  overflow: visible; 
+  cursor: pointer;
+  z-index: 30;
+}
+
+#planet-spotify:hover,
+#planet-spotify.expanded {
+  width: 260px !important;  
+  height: 260px !important; 
+  border-radius: 18px !important;
+  box-shadow: 0 0 40px 12px rgba(29,185,84,0.5), 0 0 80px rgba(29,185,84,0.25);
+  transform: translate(-50%, -50%) !important;
+  z-index: 200;
+  overflow: visible; /* Keep visible when expanded */
+}
+
+/* The collapsed state: show icon + label */
+#planet-spotify .sp-collapsed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+#planet-spotify:hover .sp-collapsed,
+#planet-spotify.expanded .sp-collapsed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The expanded card content */
+#planet-spotify .sp-expanded {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  opacity: 0;
+  transition: opacity 0.25s ease 0.2s;
+  pointer-events: none;
+  overflow: visible; /* Allow text to be fully visible */
+  background: rgba(7, 5, 26, 0.85); 
+  border-radius: 16px; 
+  backdrop-filter: blur(8px); 
+}
+
+#planet-spotify:hover .sp-expanded,
+#planet-spotify.expanded .sp-expanded {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.sp-status {
+  font-size: 0.55rem; 
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #69f0ae;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  font-weight: 600; 
+  text-shadow: 0 0 4px rgba(0,0,0,0.5); 
+}
+
+.sp-art-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sp-art {
+  width: 52px; 
+  height: 52px; 
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #145a32;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3); 
+}
+
+.sp-track-info { 
+  flex: 1; 
+  min-width: 0;
+  background: rgba(0, 0, 0, 0.4); 
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.sp-track {
+  font-family: var(--font-display);
+  font-size: 0.78rem; 
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3); 
+}
+
+.sp-artist {
+  font-size: 0.6rem; 
+  color: rgba(255,255,255,0.8); 
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3); 
+}
+
+.sp-bars {
+  display: flex;
+  gap: 3px;
+  align-items: center; 
+  justify-content: center; 
+  height: auto; 
+  min-height: 24px; 
+  margin-top: 8px;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 12px; 
+  border-radius: 12px;
+}
+
+.sp-bar {
+  width: 3px;
+  background: #1db954;
+  border-radius: 2px;
+  animation: bar-dance 0.8s ease-in-out infinite alternate;
+  transform-origin: center; 
+}
+.sp-bar:nth-child(1) { animation-delay: 0s;    height: 6px; }
+.sp-bar:nth-child(2) { animation-delay: 0.15s; height: 10px; }
+.sp-bar:nth-child(3) { animation-delay: 0.3s;  height: 14px; }
+.sp-bar:nth-child(4) { animation-delay: 0.1s;  height: 8px; }
+.sp-bar:nth-child(5) { animation-delay: 0.25s; height: 12px; }
+
+@keyframes bar-dance {
+  0% { 
+    transform: scaleY(0.3); 
+    transform-origin: center;
+  }
+  100% { 
+    transform: scaleY(1); 
+    transform-origin: center;
+  }
+}
+.sp-paused .sp-bar {
+  animation: none;
+  transform: scaleY(0.3);
+  opacity: 0.4;
+}
+
+.sp-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 5px 12px;
+  background: #1db954;
+  color: #000;
+  border-radius: 50px;
+  font-size: 0.55rem;
+  font-weight: 800; 
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+  white-space: nowrap;
+  align-self: flex-start;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
+}
+
+.sp-link:hover { 
+  background: #1ed760;
+  transform: scale(1.02);
+}
+
+    /* Pulse when playing */
+    #planet-spotify.is-playing {
+      animation: spotify-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes spotify-glow {
+      0%, 100% { box-shadow: 0 0 16px 6px rgba(29,185,84,0.6), 0 0 32px rgba(29,185,84,0.3); }
+      50%       { box-shadow: 0 0 24px 12px rgba(29,185,84,0.8), 0 0 50px rgba(29,185,84,0.5); }
+    }
+
+    /* --- Glimpses Planet (formerly Photography) --- */
+    #planet-photo {
+      width: clamp(36px, 5.8vw, 52px);
+      height: clamp(36px, 5.8vw, 52px);
+      background: radial-gradient(circle at 35% 30%,
+        #fff3e0 0%, #ff8a65 40%, #e64a19 75%, #bf360c 100%);
+      box-shadow: 0 0 15px 5px rgba(255,138,101,0.55), 0 0 30px rgba(255,138,101,0.25);
+    }
+
+    /* --- Contact Planet --- */
+    #planet-contact {
+      width: clamp(32px, 5vw, 46px);
+      height: clamp(32px, 5vw, 46px);
+      background: radial-gradient(circle at 35% 30%,
+        #f3e5f5 0%, #b388ff 40%, #6200ea 80%, #38006b 100%);
+      box-shadow: 0 0 14px 5px rgba(179,136,255,0.55), 0 0 28px rgba(179,136,255,0.25);
+    }
+
+    /* ══════════════════════════════════════════════════
+       COMETS — canvas layer above starfield
+       ══════════════════════════════════════════════════ */
+    #comet-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════════════════
+       SATURN-LIKE RING for Portfolio planet
+       ══════════════════════════════════════════════════ */
+    #planet-portfolio::before {
+      content: '';
+      position: absolute;
+      width: 160%;
+      height: 30%;
+      border: 3px solid rgba(105,240,174,0.35);
+      border-radius: 50%;
+      transform: rotateX(70deg);
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════════════════
+       MODAL — Spotify Now Playing
+       ══════════════════════════════════════════════════ */
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(3,3,10,0.85);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    #modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #modal-box {
+      background: linear-gradient(135deg, #0d0b2a 0%, #0a1628 50%, #07051a 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 2rem 2.2rem;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 0 60px rgba(29,185,84,0.15), 0 40px 80px rgba(0,0,0,0.6);
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    #modal-overlay.open #modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0.8rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: #fff; }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1db954;
+      margin-bottom: 1.2rem;
+    }
+
+    #now-playing-card {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    #np-album-art {
+      width: 72px;
+      height: 72px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(29,185,84,0.3);
+    }
+
+    #np-album-art.placeholder {
+      background: linear-gradient(135deg, #1db954, #145a32);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .np-text { flex: 1; overflow: hidden; }
+
+    #np-status {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1db954;
+      margin-bottom: 0.3rem;
+    }
+
+    #np-track {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #np-artist {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 0.2rem;
+    }
+
+    #np-link {
+      display: inline-block;
+      margin-top: 1.2rem;
+      padding: 0.45rem 1rem;
+      background: #1db954;
+      color: #000;
+      border-radius: 50px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    #np-link:hover {
+      background: #1ed760;
+      transform: scale(1.04);
+    }
+
+    .np-last-updated {
+      font-size: 0.5rem;
+      color: rgba(255,255,255,0.25);
+      margin-top: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ══════════════════════════════════════════════════
+       SCROLL TRANSITION SPACER
+       ══════════════════════════════════════════════════ */
+    #scroll-trigger {
+      height: 60px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* ══════════════════════════════════════════════════
+       EDITORIAL TEXT WALL
+       ══════════════════════════════════════════════════ */
+    #editorial {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      padding: 5rem clamp(1.5rem, 8vw, 8rem) 8rem;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(8, 5, 20, 0.65);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      box-shadow: 0 0 80px 40px rgba(15, 10, 40, 0.4);
+      border-radius: 18px;
+    }
+
+    #editorial.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Section label */
+    .ed-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    /* Large editorial headings */
+    .ed-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--star-white);
+      margin-bottom: 1.5rem;
+    }
+
+    .ed-heading em {
+      font-style: normal;
+      color: var(--glow-gold);
+    }
+
+    /* Body text */
+    .ed-body {
+      font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+      line-height: 1.85;
+      color: rgba(232,228,255,0.75);
+      max-width: 65ch;
+    }
+
+    /* Horizontal rule / divider */
+    .ed-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin: 4rem 0;
+    }
+
+    /* Contact grid */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .contact-item {
+      padding: 1.2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(4px);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .contact-item:hover {
+      border-color: rgba(179,136,255,0.4);
+      background: rgba(179,136,255,0.05);
+    }
+
+    .contact-item-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .contact-item a {
+      color: var(--star-white);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+
+    .contact-item a:hover { color: var(--glow-blue); }
+
+    /* Video embed */
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Quote of the Day */
+    .qotd-block {
+      position: relative;
+      padding: 2rem 2rem 2rem 3rem;
+      border-left: 3px solid var(--glow-gold);
+      margin-top: 1.5rem;
+      background: rgba(255,213,79,0.04);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .qotd-block::before {
+      content: '"';
+      position: absolute;
+      left: 0.6rem;
+      top: 0.2rem;
+      font-family: var(--font-display);
+      font-size: 4rem;
+      color: var(--glow-gold);
+      opacity: 0.3;
+      line-height: 1;
+    }
+
+    #qotd-text {
+      font-size: clamp(0.9rem, 2vw, 1.15rem);
+      font-style: italic;
+      line-height: 1.7;
+      color: var(--star-white);
+    }
+
+    #qotd-author {
+      display: block;
+      margin-top: 0.8rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--glow-gold);
+      opacity: 0.7;
+    }
+
+    .qotd-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      background: none;
+      border: 1px solid rgba(255,213,79,0.3);
+      color: rgba(255,213,79,0.7);
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.9rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .qotd-refresh:hover {
+      background: rgba(255,213,79,0.1);
+      color: var(--glow-gold);
+      border-color: var(--glow-gold);
+    }
+
+    /* ══════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════ */
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--glow-purple); }
+
+    /* Back-to-top planet button */
+    .back-to-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35);
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .back-to-top:hover {
+      border-color: var(--glow-purple);
+      color: var(--glow-purple);
+    }
+
+    /* ══════════════════════════════════════════════════
+       MOBILE — < 768px
+       ══════════════════════════════════════════════════ */
+    @media (max-width: 767px) {
+      #solar-system {
+        /* On mobile, we hide the orbital layout */
+        display: none;
+      }
+
+      .scroll-hint { display: none; }
+
+      #hero {
+        height: auto;
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        justify-content: flex-start;
+      }
+
+      .site-title {
+        top: 1.5rem;
+        font-size: 1.1rem;
+      }
+
+      /* Mobile planet column */
+      #mobile-planets {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .mob-planet-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        max-width: 300px;
+        padding: 0.9rem 1.2rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.03);
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      }
+
+      .mob-planet-item:hover {
+        background: rgba(255,255,255,0.07);
+        transform: translateX(4px);
+      }
+
+      .mob-planet-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .mob-planet-info { flex: 1; }
+      .mob-planet-name { font-size: 0.75rem; font-weight: 700; color: var(--star-white); }
+      .mob-planet-desc { font-size: 0.6rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+      /* Mobile Now Playing — waveform bars */
+      .mob-np-bars {
+        display: flex;
+        gap: 2px;
+        align-items: center;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+
+      .mob-np-bar {
+        width: 3px;
+        background: #1db954;
+        border-radius: 2px;
+        animation: bar-dance 0.8s ease-in-out infinite alternate;
+        transform-origin: center;
+      }
+      .mob-np-bar:nth-child(1) { animation-delay: 0s;    height: 6px; }
+      .mob-np-bar:nth-child(2) { animation-delay: 0.15s; height: 10px; }
+      .mob-np-bar:nth-child(3) { animation-delay: 0.3s;  height: 14px; }
+      .mob-np-bar:nth-child(4) { animation-delay: 0.1s;  height: 8px; }
+      .mob-np-bar:nth-child(5) { animation-delay: 0.25s; height: 12px; }
+
+      .mob-np-lines {
+        display: flex;
+        gap: 2px;
+        align-items: center;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+
+      .mob-np-line {
+        width: 3px;
+        border-radius: 2px;
+        background: rgba(255,255,255,0.25);
+      }
+      .mob-np-line:nth-child(1) { height: 6px; }
+      .mob-np-line:nth-child(2) { height: 10px; }
+      .mob-np-line:nth-child(3) { height: 14px; }
+      .mob-np-line:nth-child(4) { height: 8px; }
+      .mob-np-line:nth-child(5) { height: 12px; }
+
+      .mob-scroll-hint {
+        margin-top: 2.5rem;
+        font-size: 0.6rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--glow-blue);
+        opacity: 0.6;
+        animation: float-hint 2.5s ease-in-out infinite;
+        text-align: center;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #mobile-planets { display: none; }
+    }
+
+    /* ══════════════════════════════════════════════════
+       UTILITY
+       ══════════════════════════════════════════════════ */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+    }
+
+    /* Nebula glow blobs (decorative, fixed) */
+    .nebula {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .nebula-1 { width: 500px; height: 500px; background: var(--glow-purple); top: -150px; left: -100px; }
+    .nebula-2 { width: 400px; height: 400px; background: var(--glow-blue); bottom: 10%; right: -100px; }
+    .nebula-3 { width: 350px; height: 350px; background: var(--glow-gold); top: 50%; left: 30%; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════
+       STARFIELD CANVAS — animated star background
+       ══════════════════════════════════════════════════ -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <!-- Comet canvas — occasional streaks across the background -->
+  <canvas id="comet-canvas" aria-hidden="true"></canvas>
+
+  <!-- Decorative nebula blobs -->
+  <div class="nebula nebula-1" aria-hidden="true"></div>
+  <div class="nebula nebula-2" aria-hidden="true"></div>
+  <div class="nebula nebula-3" aria-hidden="true"></div>
+
+  <!-- ════════════════════════════════════════════════
+       HERO SECTION — Solar System
+       ══════════════════════════════════════════════════ -->
+  <section id="hero" aria-label="Solar System Navigation">
+
+    <!-- ┌─────────────────────────────────────────────────┐
+         │  SITE TITLE — change "Your Name" here           │
+         └─────────────────────────────────────────────────┘ -->
+    <h1 class="site-title">
+      <!-- ↓ PLACEHOLDER: Replace with your name/handle ↓ -->
+      Isaiah<span> Sanders</span> &middot; Beyond the Stars
+    </h1>
+
+    <!-- ═══════════════════════════════════════════════════
+         DESKTOP: Orbital Solar System
+         ═══════════════════════════════════════════════════ -->
+    <div id="solar-system" role="navigation" aria-label="Planet navigation">
+
+    <!-- Orbital rings will be generated by JavaScript -->
+
+      <!-- ┌──────────────────────────────────────────────────────┐
+           │  SUN — links to Projects page                        │
+           │  PLACEHOLDER: Update href to your projects URL       │
+           └──────────────────────────────────────────────────────┘ -->
+      <a id="sun"
+         href="/projects"
+         aria-label="Projects — click the sun"
+         title="Projects"
+         onclick="window.location.href='/projects'; return false;">
+         <!-- ↑ PLACEHOLDER: Replace '#' with your projects URL e.g. '/projects' or 'https://github.com/yourname' -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-size:clamp(0.9rem,2vw,1.3rem);">☀️</span>
+          <span class="planet-label" style="color:rgba(0,0,0,0.65);">Projects</span>
+        </div>
+      </a>
+
+      <!-- Planets are positioned by JS below -->
+
+    </div><!-- /#solar-system -->
+
+    <!-- ═══════════════════════════════════════════════════
+         MOBILE: Vertical planet column
+         ═══════════════════════════════════════════════════ -->
+    <div id="mobile-planets" role="navigation" aria-label="Mobile navigation">
+
+      <!-- Sun / Projects — always first on mobile -->
+      <a class="mob-planet-item"
+         href="/projects"
+         aria-label="Projects">
+         <!-- ↑ PLACEHOLDER: Replace '#' with your projects URL -->
+        <div class="mob-planet-dot"
+             style="background:radial-gradient(circle at 35% 35%,#fffde7,#ffd54f,#ff8f00);
+                    box-shadow:0 0 14px 5px rgba(255,213,79,0.5);">
+        </div>
+        <div class="mob-planet-info">
+          <div class="mob-planet-name">☀️ Projects</div>
+          <div class="mob-planet-desc">The sun — my work</div>
+        </div>
+      </a>
+
+      <!-- Blog -->
+      <a class="mob-planet-item"
+         href="/blog"
+         aria-label="Blog">
+         <!-- ↑ PLACEHOLDER: Replace with your blog URL -->
+        <div class="mob-planet-dot"
+             style="background:radial-gradient(circle at 35% 30%,#e1f5fe,#4fc3f7,#0277bd);
+                    box-shadow:0 0 12px rgba(79,195,247,0.5);">
+        </div>
+        <div class="mob-planet-info">
+          <div class="mob-planet-name">✍️ Blog</div>
+          <div class="mob-planet-desc">Writing & thoughts</div>
+        </div>
+      </a>
+
+
+      <!-- Resume -->
+      <a class="mob-planet-item"
+         href="/resume"
+         aria-label="Resume">
+         <!-- ↑ PLACEHOLDER: Replace with your resume URL or /resume.pdf -->
+        <div class="mob-planet-dot"
+             style="background:radial-gradient(circle at 35% 30%,#fff9c4,#f48fb1,#c2185b);
+                    box-shadow:0 0 12px rgba(244,143,177,0.5);">
+        </div>
+        <div class="mob-planet-info">
+          <div class="mob-planet-name">📄 Resume</div>
+          <div class="mob-planet-desc">Experience & skills</div>
+        </div>
+      </a>
+
+      <!-- Glimpses — a peek into life, not a "photography" section -->
+      <a class="mob-planet-item"
+         href="/glimpses"
+         aria-label="Glimpses">
+         <!-- ↑ PLACEHOLDER: Replace with your link (Instagram, etc.) -->
+        <div class="mob-planet-dot"
+             style="background:radial-gradient(circle at 35% 30%,#fff3e0,#ff8a65,#e64a19);
+                    box-shadow:0 0 12px rgba(255,138,101,0.5);">
+        </div>
+        <div class="mob-planet-info">
+          <div class="mob-planet-name">✦ Glimpses</div>
+          <div class="mob-planet-desc">A peek into my life</div>
+        </div>
+      </a>
+
+      <!-- Now Playing -->
+      <!-- Now Playing -->
+      <div class="mob-planet-item"
+           id="mob-now-playing"
+           role="button"
+           tabindex="0"
+           aria-label="Now Playing"
+           onclick="openSpotifyModal()"
+           onkeydown="if(event.key==='Enter')openSpotifyModal()">
+        <div class="mob-planet-dot"
+             style="background:radial-gradient(circle at 35% 30%,#e8f5e9,#69f0ae,#1db954);
+                    box-shadow:0 0 12px rgba(29,185,84,0.5);">
+        </div>
+        <div class="mob-planet-info">
+          <div class="mob-planet-name">🎵 Now Playing</div>
+          <div class="mob-planet-desc" id="mob-np-desc">What I'm listening to</div>
+        </div>
+        <!-- Animated waveform when playing -->
+        <div class="mob-np-bars" id="mob-np-bars" style="display:none;">
+          <div class="mob-np-bar"></div>
+          <div class="mob-np-bar"></div>
+          <div class="mob-np-bar"></div>
+          <div class="mob-np-bar"></div>
+          <div class="mob-np-bar"></div>
+        </div>
+        <!-- Static lines when not playing -->
+        <div class="mob-np-lines" id="mob-np-lines">
+          <div class="mob-np-line"></div>
+          <div class="mob-np-line"></div>
+          <div class="mob-np-line"></div>
+          <div class="mob-np-line"></div>
+          <div class="mob-np-line"></div>
+        </div>
+      </div>
+
+      <!-- Contact — scrolls to editorial section -->
+      <div class="mob-planet-item"
+           role="button"
+           tabindex="0"
+           aria-label="Contact"
+           onclick="document.getElementById('editorial').scrollIntoView({behavior:'smooth'})"
+           onkeydown="if(event.key==='Enter')document.getElementById('editorial').scrollIntoView({behavior:'smooth'})">
+        <div class="mob-planet-dot"
+             style="background:radial-gradient(circle at 35% 30%,#f3e5f5,#b388ff,#6200ea);
+                    box-shadow:0 0 12px rgba(179,136,255,0.5);">
+        </div>
+        <div class="mob-planet-info">
+          <div class="mob-planet-name">📬 Contact</div>
+          <div class="mob-planet-desc">Get in touch</div>
+        </div>
+      </div>
+
+      <p class="mob-scroll-hint">↓ Scroll to read more</p>
+    </div><!-- /#mobile-planets -->
+
+    <!-- Desktop scroll hint -->
+    <div class="scroll-hint" aria-hidden="true">scroll</div>
+
+  </section><!-- /#hero -->
+
+  <!-- Spacer that triggers the scroll transition -->
+  <div id="scroll-trigger" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════
+       EDITORIAL WALL OF TEXT
+       ══════════════════════════════════════════════════ -->
+  <main id="editorial" aria-label="About, Contact, and more">
+
+    <!-- ─────────────────────────────────────────────────
+         ABOUT ME
+    ───────────────────────────────────────────────────── -->
+    <section aria-labelledby="about-heading">
+      <span class="ed-label">01 &mdash; About</span>
+      <h2 class="ed-heading" id="about-heading">
+        <!-- ↓ PLACEHOLDER: Change this headline ↓ -->
+        A man of <em>galactic proportions.</em>
+      </h2>
+
+      <!-- ┌────────────────────────────────────────────────────────┐
+           │  ABOUT ME TEXT — Replace these paragraphs with         │
+           │  your actual bio. This is lorem ipsum placeholder.     │
+           └────────────────────────────────────────────────────────┘ -->
+      <div class="ed-body">
+        <p>
+          I'm a hobbyist designer and engineering student based in the United States. My interests include automation, precision agriculture, computer vision, and machine learning.
+        </p>
+        <br>
+        <p>
+          I am a beginner through and through and still learning as I go, but I always enjoy a good challenge.
+        </p>
+        <br>
+        <p>
+          <!-- ↓ PLACEHOLDER: Add a third paragraph or your own content ↓ -->
+          Currently: open to the right opportunities. Feel free to reach out from the Contact Me section.
+        </p>
+      </div>
+    </section>
+
+    <hr class="ed-divider">
+
+    <!-- ─────────────────────────────────────────────────
+         CONTACT
+    ───────────────────────────────────────────────────── -->
+    <section aria-labelledby="contact-heading">
+      <span class="ed-label">02 &mdash; Contact</span>
+      <h2 class="ed-heading" id="contact-heading">
+        A <em>space</em> for conversation.
+      </h2>
+
+      <div class="contact-grid">
+        <!-- ┌──────────────────────────────────────────────────────┐
+             │  CONTACT INFO — Replace ALL placeholder values below │
+             └──────────────────────────────────────────────────────┘ -->
+
+        <div class="contact-item">
+          <span class="contact-item-label">Email</span>
+          <!-- ↓ PLACEHOLDER: Replace with your email ↓ -->
+          <a href="mailto:hello@yourname.com">isaiahs3@illinois.edu</a>
+        </div>
+
+        <div class="contact-item">
+          <span class="contact-item-label">GitHub</span>
+          <!-- ↓ PLACEHOLDER: Replace with your GitHub URL ↓ -->
+          <a href="https://github.com/yourhandle" target="_blank" rel="noopener">github.com/isaiahsanders-lol</a>
+        </div>
+		
+        <!-- <div class="contact-item"> -->
+          <!-- <span class="contact-item-label">Mastodon</span> -->
+          <!-- ↓ PLACEHOLDER: Replace with your handle ↓ -->
+          <!-- <a href="https://mastodon.social/@hungnir" target="_blank" rel="noopener">@hungnir</a> -->
+        <!-- </div> -->
+
+      </div>
+    </section>
+
+    <hr class="ed-divider">
+
+    <!-- ─────────────────────────────────────────────────
+         VIDEO OF THE WEEK
+    ───────────────────────────────────────────────────── -->
+    <section aria-labelledby="video-heading">
+      <span class="ed-label">03 &mdash; Video of the Week</span>
+      <h2 class="ed-heading" id="video-heading">
+        Currently <em>watching.</em>
+      </h2>
+
+      <div class="video-wrap">
+        <!--
+          ┌─────────────────────────────────────────────────────────────────┐
+          │  VIDEO URL — CHANGE THIS ONE VARIABLE AT THE TOP OF THE SCRIPT  │
+          │  Look for: const VIDEO_OF_THE_WEEK = "..." in the <script> tag  │
+          └─────────────────────────────────────────────────────────────────┘
+        -->
+        <iframe id="video-embed"
+                src=""
+                title="Video of the Week"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <hr class="ed-divider">
+
+    <!-- ─────────────────────────────────────────────────
+         QUOTE OF THE DAY
+    ───────────────────────────────────────────────────── -->
+    <section aria-labelledby="qotd-heading">
+      <span class="ed-label">04 &mdash; Quote of the Day</span>
+      <h2 class="ed-heading" id="qotd-heading">
+        Words that <em>orbit me.</em>
+      </h2>
+
+      <div class="qotd-block" role="blockquote">
+        <p id="qotd-text">Loading quote...</p>
+        <cite id="qotd-author">—</cite>
+      </div>
+      <button class="qotd-refresh" onclick="showRandomQuote()" aria-label="Show another quote">
+        ↻ Another quote
+      </button>
+    </section>
+
+  </main><!-- /#editorial -->
+
+  <!-- ══════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════ -->
+  <footer>
+    <div>
+      <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+        ↑ Return to orbit
+      </button>
+    </div>
+    <!-- Update copyright name ↓ -->
+    <p>&copy; <span id="footer-year"></span> Isaiah Sanders </p>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════
+       SPOTIFY NOW PLAYING MODAL
+       ══════════════════════════════════════════════════ -->
+  <div id="modal-overlay"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="modal-title"
+       onclick="if(event.target===this)closeSpotifyModal()">
+    <div id="modal-box">
+      <button class="modal-close" onclick="closeSpotifyModal()" aria-label="Close">&times;</button>
+      <p class="modal-title" id="modal-title">🎵 Now Playing</p>
+
+      <div id="now-playing-card">
+        <!-- Album art -->
+        <img id="np-album-art" src="" alt="Album art" />
+
+        <!-- Track info -->
+        <div class="np-text">
+          <p id="np-status">Fetching...</p>
+          <p id="np-track">—</p>
+          <p id="np-artist">—</p>
+        </div>
+      </div>
+
+      <p id="np-idle-quote" style="display:none; font-size:0.65rem; font-style:italic; color:rgba(255,255,255,0.4); margin-top:0.8rem; line-height:1.6;"></p>
+
+      <a id="np-link" href="#" target="_blank" rel="noopener">Listen on Spotify</a>
+      
+      <p class="np-last-updated" id="np-updated"></p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       SCRIPTS
+       ════════════════════════════════════════════════════════════════ -->
+  <script>
+  // ╔══════════════════════════════════════════════════════════════════════╗
+  // ║         ★  CONFIGURATION — EDIT THESE TO PERSONALISE  ★             ║
+  // ╚════════════════════════════════════════════════════════════════════╝
+
+  // ─────────────────────────────────────────────────────────────────────
+  //  VIDEO OF THE WEEK
+  //  Replace the YouTube video ID below (the part after "?v=" in the URL)
+  //  Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ → "dQw4w9WgXcQ"
+  // ─────────────────────────────────────────────────────────────────────
+  const VIDEO_OF_THE_WEEK = "MnazGJzK4UY"; // ← CHANGE THIS YOUTUBE VIDEO ID
+
+  // ─────────────────────────────────────────────────────────────────────
+  //  QUOTE OF THE DAY ARRAY
+  //  Add, remove, or edit quotes below. One quote per entry object.
+  //  Format: { text: "the quote", author: "Author Name" }
+  // ─────────────────────────────────────────────────────────────────────
+  const QUOTES = [
+    {
+      text: "We are all just walking each other home.",
+      author: "Ram Dass"
+    },
+    {
+      text: "The universe is under no obligation to make sense to you.",
+      author: "Neil deGrasse Tyson"
+    },
+    {
+      text: "Two possibilities exist: either we are alone in the universe or we are not. Both are equally terrifying.",
+      author: "Arthur C. Clarke"
+    },
+    {
+      text: "Not all those who wander are lost.",
+      author: "J.R.R. Tolkien"
+    },
+    {
+      text: "The cosmos is within us. We are made of star stuff. We are a way for the universe to know itself.",
+      author: "Carl Sagan"
+    }
+    // ↑ ADD MORE QUOTES HERE — copy the { text: "...", author: "..." } pattern
+  ];
+
+  // ─────────────────────────────────────────────────────────────────────
+  //  PLANET LINKS
+  //  Set each planet's destination URL here.
+  //  'spotify' is special — it opens the Now Playing modal.
+  //  'contact' is special — it scrolls to the editorial section.
+  // ─────────────────────────────────────────────────────────────────────
+  const PLANET_CONFIG = [
+    {
+      id:      "planet-blog",
+      label:   "Blog",
+      icon:    "✍️",
+      tooltip: "Thoughts & Writing",
+      href:    "/blog",
+      orbit:   140,
+      speed:   75,
+      color:   "#4fc3f7"
+    },
+    {
+      id:      "planet-resume",
+      label:   "Resume",
+      icon:    "📄",
+      tooltip: "CV / Experience",
+      href:    "/resume",
+      orbit:   210,
+      speed:   50,
+      color:   "#f48fb1"
+    },
+    {
+      id:      "planet-spotify",
+      label:   "Now Playing",
+      icon:    "🎵",
+      tooltip: "What I'm Listening To",
+      href:    "spotify",
+      orbit:   280,
+      speed:   140,
+      color:   "#1db954"
+    },
+    {
+      id:      "planet-photo",
+      label:   "Glimpses",
+      icon:    "✦",
+      tooltip: "A peek into my life",
+      href:    "/glimpses",
+      orbit:   280,
+      speed:   90,
+      color:   "#ff8a65"
+    },
+    {
+      id:      "planet-contact",
+      label:   "Contact",
+      icon:    "📬",
+      tooltip: "Get In Touch",
+      href:    "contact",
+      orbit:   140,
+      speed:   65,
+      color:   "#b388ff"
+    }
+  ];
+
+  // ─────────────────────────────────────────────────────────────────────
+  //  SPOTIFY ENDPOINT
+  //
+  //  ⚠️  The Spotify Web API requires an OAuth access token tied to YOUR
+  //  account. You CANNOT safely call Spotify directly from the browser
+  //  because that would expose your credentials.
+  //
+  //  SOLUTION: Set up a tiny serverless proxy that holds your secrets and
+  //  returns the current track as JSON.
+  //
+  //  ── OPTION A: Cloudflare Worker (free, recommended) ──────────────────
+  //
+  //  1. Go to https://dash.cloudflare.com → Workers & Pages → Create
+  //  2. Paste this Worker code:
+  //
+  //     const CLIENT_ID     = 'YOUR_SPOTIFY_CLIENT_ID';
+  //     const CLIENT_SECRET = 'YOUR_SPOTIFY_CLIENT_SECRET';
+  //     const REFRESH_TOKEN = 'YOUR_SPOTIFY_REFRESH_TOKEN';
+  //
+  //     async function getAccessToken() {
+  //       const res = await fetch('https://accounts.spotify.com/api/token', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/x-www-form-urlencoded',
+  //           'Authorization': 'Basic ' + btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)
+  //         },
+  //         body: new URLSearchParams({
+  //           grant_type: 'refresh_token',
+  //           refresh_token: REFRESH_TOKEN
+  //         })
+  //       });
+  //       const data = await res.json();
+  //       return data.access_token;
+  //     }
+  //
+  //     export default {
+  //       async fetch(request) {
+  //         const headers = {
+  //           'Access-Control-Allow-Origin': '*',
+  //           'Content-Type': 'application/json'
+  //         };
+  //         try {
+  //           const token = await getAccessToken();
+  //           let res = await fetch(
+  //             'https://api.spotify.com/v1/me/player/currently-playing',
+  //             { headers: { Authorization: `Bearer ${token}` } }
+  //           );
+  //           if (res.status === 204 || res.status === 404) {
+  //             // Nothing playing — fetch recently played instead
+  //             res = await fetch(
+  //               'https://api.spotify.com/v1/me/player/recently-played?limit=1',
+  //               { headers: { Authorization: `Bearer ${token}` } }
+  //             );
+  //             const d = await res.json();
+  //             const item = d.items[0].track;
+  //             return Response.json({
+  //               isPlaying: false,
+  //               track:    item.name,
+  //               artist:   item.artists.map(a => a.name).join(', '),
+  //               albumArt: item.album.images[1]?.url || item.album.images[0]?.url,
+  //               songUrl:  item.external_urls.spotify
+  //             }, { headers });
+  //           }
+  //           const d = await res.json();
+  //           const item = d.item;
+  //           return Response.json({
+  //             isPlaying: true,
+  //             track:    item.name,
+  //             artist:   item.artists.map(a => a.name).join(', '),
+  //             albumArt: item.album.images[1]?.url || item.album.images[0]?.url,
+  //             songUrl:  item.external_urls.spotify
+  //           }, { headers });
+  //         } catch (e) {
+  //           return new Response(JSON.stringify({ error: e.message }), { status: 500, headers });
+  //         }
+  //       }
+  //     };
+  //
+  //  3. Deploy the Worker. Copy its URL (e.g. https://now-playing.yourname.workers.dev)
+  //  4. Store CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN in Worker's "Variables & Secrets"
+  //     (not hardcoded in the script — use env vars: env.CLIENT_ID etc.)
+  //  5. To get your REFRESH_TOKEN, use the Spotify OAuth flow once:
+  //     https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
+  //
+  //  ── OPTION B: Vercel Edge Function ───────────────────────────────────
+  //
+  //  1. Create a Next.js or plain Vercel project
+  //  2. Add a file /api/now-playing.js with similar logic as above
+  //  3. Set env vars: SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN
+  //  4. Deploy to Vercel (free tier). Your endpoint: /api/now-playing
+  //
+  //  ── OPTION C: Last.fm API (simpler, no OAuth required) ───────────────
+  //
+  //  Last.fm is easier: just one API key, no refresh tokens!
+  //  1. Sign up at https://www.last.fm/api → get an API key
+  //  2. Replace fetch call below with:
+  // const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=hungnir&api_key=7c4d0baae1655a520e8b32436305be7e&format=json&limit=1`;
+  //  3. Parse response: data.recenttracks.track[0]
+  //  4. The @attr.nowplaying field tells you if it's currently playing
+  //  ─────────────────────────────────────────────────────────────────────
+
+  // ↓ PLACEHOLDER: Replace with your proxy endpoint URL once deployed ↓
+  const SPOTIFY_PROXY_URL = null; // e.g. "https://now-playing.yourname.workers.dev"
+
+  // ─────────────────────────────────────────────────────────────────────
+  //  SPOTIFY FALLBACK / TEST DATA
+  //  Used when SPOTIFY_PROXY_URL is null OR the request fails.
+  //  This lets you test the UI without a real backend.
+  // ─────────────────────────────────────────────────────────────────────
+  const SPOTIFY_FALLBACK_TRACKS = [
+    {
+      isPlaying: false,
+      track:    "Clair de Lune",
+      artist:   "Claude Debussy",
+      albumArt: null,
+      songUrl:  "https://open.spotify.com"
+    },
+    {
+      isPlaying: true,
+      track:    "Space Oddity",
+      artist:   "David Bowie",
+      albumArt: null,
+      songUrl:  "https://open.spotify.com"
+    }
+  ];
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  STARFIELD — animated canvas
+  // ════════════════════════════════════════════════════════════════════════
+  (function initStarfield() {
+    const canvas = document.getElementById('starfield');
+    const ctx    = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function makeStars(n) {
+      stars = [];
+      for (let i = 0; i < n; i++) {
+        stars.push({
+          x:       Math.random() * W,
+          y:       Math.random() * H,
+          r:       Math.random() * 1.5 + 0.2,
+          alpha:   Math.random(),
+          speed:   Math.random() * 0.005 + 0.001,
+          phase:   Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+      stars.forEach(s => {
+        const a = 0.4 + 0.6 * Math.abs(Math.sin(s.phase + t * s.speed));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232,228,255,${a})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    makeStars(280);
+    window.addEventListener('resize', () => { resize(); makeStars(280); });
+    requestAnimationFrame(draw);
+  })();
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  COMETS — occasional streaks across the fixed background canvas
+  // ════════════════════════════════════════════════════════════════════════
+  (function initComets() {
+    const canvas = document.getElementById('comet-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Each comet: position, velocity, length, life
+    const comets = [];
+
+    function spawnComet() {
+      // Comets enter from the top-left quadrant area, travel diagonally
+      const angle = (Math.random() * 30 + 20) * (Math.PI / 180); // 20-50 deg below horizontal
+      const speed = Math.random() * 6 + 5;
+      const length = Math.random() * 180 + 80;
+      // Start off-screen top or left edge
+      const startX = Math.random() * W * 1.2 - W * 0.1;
+      const startY = -length;
+
+      comets.push({
+        x: startX, y: startY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        length,
+        alpha: 0,
+        fadeState: 'in', // 'in' | 'hold' | 'out'
+        holdTimer: 0,
+        maxAlpha: Math.random() * 0.55 + 0.25,
+        width: Math.random() * 1.2 + 0.4,
+        color: Math.random() > 0.6
+          ? `rgba(140,200,255,` // blue-white
+          : `rgba(220,210,255,` // purple-white
+      });
+    }
+
+    // Spawn first comet soon, then randomly every 4-12s
+    setTimeout(spawnComet, 1200);
+    setInterval(() => {
+      if (Math.random() < 0.7) spawnComet(); // 70% chance each interval fires
+    }, Math.random() * 8000 + 4000);
+
+    // Re-randomise interval
+    function scheduleNext() {
+      const delay = Math.random() * 9000 + 4000;
+      setTimeout(() => {
+        spawnComet();
+        scheduleNext();
+      }, delay);
+    }
+    scheduleNext();
+
+    function drawComets() {
+      ctx.clearRect(0, 0, W, H);
+
+      for (let i = comets.length - 1; i >= 0; i--) {
+        const c = comets[i];
+
+        // Fade logic
+        if (c.fadeState === 'in') {
+          c.alpha += 0.025;
+          if (c.alpha >= c.maxAlpha) { c.alpha = c.maxAlpha; c.fadeState = 'hold'; c.holdTimer = 0; }
+        } else if (c.fadeState === 'hold') {
+          c.holdTimer++;
+          if (c.holdTimer > 20) c.fadeState = 'out';
+        } else {
+          c.alpha -= 0.018;
+        }
+
+        // Move
+        c.x += c.vx;
+        c.y += c.vy;
+
+        // Draw tail gradient
+        const tailX = c.x - c.vx / Math.hypot(c.vx, c.vy) * c.length;
+        const tailY = c.y - c.vy / Math.hypot(c.vx, c.vy) * c.length;
+
+        const grad = ctx.createLinearGradient(tailX, tailY, c.x, c.y);
+        grad.addColorStop(0, c.color + '0)');
+        grad.addColorStop(0.7, c.color + (c.alpha * 0.4).toFixed(2) + ')');
+        grad.addColorStop(1, c.color + c.alpha.toFixed(2) + ')');
+
+        ctx.save();
+        ctx.strokeStyle = grad;
+        ctx.lineWidth   = c.width;
+        ctx.lineCap     = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(c.x, c.y);
+        ctx.stroke();
+
+        // Bright head
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.width * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = c.color + (c.alpha * 1.2).toFixed(2) + ')';
+        ctx.fill();
+        ctx.restore();
+
+        // Remove if fully faded or off-screen
+        if (c.alpha <= 0 || c.x > W + 100 || c.y > H + 100) {
+          comets.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(drawComets);
+    }
+
+    requestAnimationFrame(drawComets);
+  })();
+
+
+  //  Planets sit at fixed positions around their elliptical rings.
+  //  Angles are spread so no two planets overlap.
+  // ════════════════════════════════════════════════════════════════════════
+  (function buildSolarSystem() {
+    const system = document.getElementById('solar-system');
+    if (!system) return;
+
+    const existingRings = document.querySelectorAll('.orbit-ring');
+    existingRings.forEach(ring => ring.remove());
+
+    const startAngles = [40, 60, 240, 150, 330, 220];
+
+    PLANET_CONFIG.forEach((p, i) => {
+      const ringDiameter = p.orbit * 2;
+      
+      const ring = document.createElement('div');
+      ring.className = 'orbit-ring';
+      ring.style.width = `${ringDiameter}px`;
+      ring.style.height = `${ringDiameter}px`;
+      ring.style.position = 'absolute';
+      ring.style.borderRadius = '50%';
+      ring.style.border = '1px solid rgba(180,170,255,0.18)';
+      ring.style.top = '50%';
+      ring.style.left = '50%';
+      ring.style.transform = 'translate(-50%, -50%)';
+      ring.style.pointerEvents = 'none';
+      system.appendChild(ring);
+
+      const isSpotify = p.href === 'spotify';
+      const isContact = p.href === 'contact';
+
+      const tag = (isSpotify || isContact || p.href === '#') ? 'div' : 'a';
+      const el = document.createElement(tag);
+      el.id = p.id;
+      el.className = 'planet';
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', `${p.label} — ${p.tooltip}`);
+      if (tag === 'a') { el.href = p.href; }
+
+      if (isSpotify) {
+        el.innerHTML = `
+          <div class="sp-collapsed">
+            <span class="planet-icon">🎵</span>
+            <span class="planet-label">Now Playing</span>
+          </div>
+          <div class="sp-expanded" id="sp-expanded-card">
+            <p class="sp-status" id="sp-status-inline">▶ Now Playing</p>
+            <div class="sp-art-row">
+              <img class="sp-art" id="sp-art-inline" src="" alt="Album art" />
+              <div class="sp-track-info">
+                <div class="sp-track" id="sp-track-inline">—</div>
+                <div class="sp-artist" id="sp-artist-inline">—</div>
+              </div>
+            </div>
+            <div class="sp-bars" id="sp-bars" style="display:none;">
+              <div class="sp-bar"></div>
+              <div class="sp-bar"></div>
+              <div class="sp-bar"></div>
+              <div class="sp-bar"></div>
+              <div class="sp-bar"></div>
+            </div>
+            <p id="sp-idle-quote" style="font-size:0.58rem;color:rgba(255,255,255,0.5);font-style:italic;margin:6px 0 8px;line-height:1.4;display:none;"></p>
+            <a class="sp-link" id="sp-link-inline" href="https://open.spotify.com" target="_blank" rel="noopener">Open in Spotify</a>
+          </div>
+        `;
+      } else {
+        el.innerHTML = `
+          <span class="planet-icon">${p.icon}</span>
+          <span class="planet-label">${p.label}</span>
+          <span class="planet-tooltip">${p.tooltip}</span>
+        `;
+      }
+
+      const hex = p.color;
+      if (!isSpotify) {
+        el.style.cssText = `
+          background: radial-gradient(circle at 35% 30%, white 0%, ${hex} 40%, ${adjustHex(hex, -60)} 100%);
+          box-shadow: 0 0 14px 5px ${hex}88, 0 0 28px ${hex}44;
+          width: clamp(32px, 5.5vw, 52px);
+          height: clamp(32px, 5.5vw, 52px);
+        `;
+      }
+
+      const radius = p.orbit;
+      const angleRad = (startAngles[i] * Math.PI) / 180;
+      const x = Math.cos(angleRad) * radius;
+      const y = Math.sin(angleRad) * radius;
+
+      el.style.position = 'absolute';
+      el.style.left = `calc(50% + ${x}px)`;
+      el.style.top = `calc(50% + ${y}px)`;
+      el.style.transform = 'translate(-50%, -50%)';
+      
+      system.appendChild(el);
+
+      el.addEventListener('click', (e) => {
+        if (isSpotify) {
+          if (e.target.closest('a')) return;
+          e.preventDefault();
+          el.classList.toggle('expanded');
+        } else if (isContact) {
+          e.preventDefault();
+          document.getElementById('editorial').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const sp = document.getElementById('planet-spotify');
+      if (sp && sp.classList.contains('expanded') && !sp.contains(e.target)) {
+        sp.classList.remove('expanded');
+      }
+    });
+  })();
+
+  // Utility: darken hex color
+  function adjustHex(hex, amount) {
+    const n = parseInt(hex.replace('#', ''), 16);
+    const r = Math.max(0, Math.min(255, (n >> 16) + amount));
+    const g = Math.max(0, Math.min(255, ((n >> 8) & 0xff) + amount));
+    const b = Math.max(0, Math.min(255, (n & 0xff) + amount));
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6,'0')}`;
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  SCROLL HANDLER — fade solar system, reveal editorial
+  // ════════════════════════════════════════════════════════════════════════
+  (function initScroll() {
+    const hero     = document.getElementById('hero');
+    const editorial = document.getElementById('editorial');
+    const trigger  = document.getElementById('scroll-trigger');
+
+    let ticking = false;
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY     = window.scrollY;
+          const heroH       = hero.offsetHeight;
+          const progress    = Math.min(1, scrollY / (heroH * 0.6));
+
+          // Fade + scale solar system
+          hero.style.opacity   = 1 - progress;
+          hero.style.transform = `scale(${1 - progress * 0.08})`;
+
+          // Fade in editorial
+          if (scrollY > heroH * 0.4) {
+            editorial.classList.add('visible');
+          } else {
+            editorial.classList.remove('visible');
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  VIDEO OF THE WEEK — embed YouTube video
+  // ════════════════════════════════════════════════════════════════════════
+  (function initVideo() {
+    const iframe = document.getElementById('video-embed');
+    if (iframe && VIDEO_OF_THE_WEEK) {
+      iframe.src = `https://www.youtube-nocookie.com/embed/${VIDEO_OF_THE_WEEK}?rel=0&modestbranding=1`;
+    }
+  })();
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  QUOTE OF THE DAY
+  //  Uses the current date to pick a consistent daily quote.
+  //  The "Another quote" button cycles through randomly.
+  // ════════════════════════════════════════════════════════════════════════
+  let currentQuoteIndex = -1;
+
+  function getDailyQuoteIndex() {
+    const today = new Date();
+    const dayOfYear = Math.floor(
+      (today - new Date(today.getFullYear(), 0, 0)) / 86400000
+    );
+    return dayOfYear % QUOTES.length;
+  }
+
+  function showQuote(index) {
+    const q = QUOTES[index];
+    document.getElementById('qotd-text').textContent   = q.text;
+    document.getElementById('qotd-author').textContent = '— ' + q.author;
+    currentQuoteIndex = index;
+  }
+
+  function showRandomQuote() {
+    let idx;
+    do { idx = Math.floor(Math.random() * QUOTES.length); }
+    while (idx === currentQuoteIndex && QUOTES.length > 1);
+    showQuote(idx);
+  }
+
+  // Init with today's quote
+  showQuote(getDailyQuoteIndex());
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  SPOTIFY — Now Playing
+  // ════════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════════════
+//  SPOTIFY / LAST.FM — Now Playing
+// ════════════════════════════════════════════════════════════════════════
+
+const LASTFM_API_KEY = "7c4d0baae1655a520e8b32436305be7e";
+const LASTFM_USER    = "hungnir";
+
+let spotifyData = null;
+let spotifyIntervalId = null;
+
+function renderNowPlaying(data) {
+  // ── Modal (works on all devices) ──────────────────────────────────────
+  const artEl    = document.getElementById('np-album-art');
+  const trackEl  = document.getElementById('np-track');
+  const artistEl = document.getElementById('np-artist');
+  const statusEl = document.getElementById('np-status');
+  const linkEl   = document.getElementById('np-link');
+  const updatedEl = document.getElementById('np-updated');
+
+  if (statusEl) statusEl.textContent = data.isPlaying ? '▶ Now Playing' : '⏸ Recently Played';
+  if (trackEl)  trackEl.textContent  = data.track  || '—';
+  if (artistEl) artistEl.textContent = data.artist || '—';
+
+  const artSrc = data.albumArt || 'data:image/svg+xml,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72">
+      <rect width="72" height="72" rx="8" fill="#1db954"/>
+      <text x="36" y="44" font-size="28" text-anchor="middle">🎵</text>
+    </svg>`
+  );
+
+  if (artEl) { artEl.src = artSrc; artEl.style.display = 'block'; }
+  if (linkEl) linkEl.href = data.songUrl || 'https://open.spotify.com';
+
+  const now = new Date();
+  if (updatedEl) updatedEl.textContent = `Updated: ${now.toLocaleTimeString()}`;
+
+  // Idle quote in modal when not playing
+  const npIdleQuote = document.getElementById('np-idle-quote');
+  if (npIdleQuote) {
+    if (!data.isPlaying) {
+      const idleQuotes = [
+        "every song leaves a little of itself behind.",
+        "hard to get this one out of your head.",
+        "you can never get tired of good music.",
+        "i would highly recommend giving this a listen.",
+        "the best songs find you when you need them."
+      ];
+      npIdleQuote.textContent = '"' + idleQuotes[Math.floor(Math.random() * idleQuotes.length)] + '"';
+      npIdleQuote.style.display = 'block';
+    } else {
+      npIdleQuote.style.display = 'none';
+    }
+  }
+
+  
+
+  // ── Desktop hover card (only if elements exist in the DOM) ───────────
+  // Check if we're on desktop (solar-system is visible)
+  const solarSystem = document.getElementById('solar-system');
+  if (solarSystem && window.getComputedStyle(solarSystem).display !== 'none') {
+    const inlineStatus = document.getElementById('sp-status-inline');
+    const inlineArt    = document.getElementById('sp-art-inline');
+    const inlineTrack  = document.getElementById('sp-track-inline');
+    const inlineArtist = document.getElementById('sp-artist-inline');
+    const inlineLink   = document.getElementById('sp-link-inline');
+    const inlineBars   = document.getElementById('sp-bars');
+
+    if (inlineStatus) inlineStatus.textContent = data.isPlaying ? '▶ Now Playing' : '⏸ Last Played';
+    if (inlineTrack)  inlineTrack.textContent  = data.track  || '—';
+    if (inlineArtist) inlineArtist.textContent = data.artist || '—';
+    if (inlineArt)    inlineArt.src = artSrc;
+
+    // Fix: build a proper Spotify search URL when the source is Last.fm
+    if (inlineLink) {
+      const url = data.songUrl || '';
+      const isSpotifyUrl = url.startsWith('https://open.spotify.com');
+      inlineLink.href = isSpotifyUrl
+        ? url
+        : `https://open.spotify.com/search/${encodeURIComponent((data.track || '') + ' ' + (data.artist || ''))}`;
+    }
+
+    // Waveform: only show when actively playing
+    if (inlineBars) inlineBars.style.display = data.isPlaying ? 'flex' : 'none';
+
+    // Idle quote: only show when not playing
+    const idleQuoteEl = document.getElementById('sp-idle-quote');
+    if (idleQuoteEl) {
+      if (!data.isPlaying) {
+        const idleQuotes = [
+          "every song leaves a little of itself behind.",
+          "hard to get this one out of your head.",
+          "you can never get tired of good music.",
+          "i would highly recommend giving this a listen.",
+          "the best songs find you when you need them."
+        ];
+        idleQuoteEl.textContent = idleQuotes[Math.floor(Math.random() * idleQuotes.length)];
+        idleQuoteEl.style.display = 'block';
+      } else {
+        idleQuoteEl.style.display = 'none';
+      }
+    }
+
+    const planet = document.getElementById('planet-spotify');
+    if (planet) planet.classList.toggle('is-playing', !!data.isPlaying);
+
+ } // closes the desktop solarSystem if-block
+
+  // ── Mobile widget — runs on ALL screen sizes ─────────────────────────
+  const mobBars  = document.getElementById('mob-np-bars');
+  const mobLines = document.getElementById('mob-np-lines');
+  const mobDesc  = document.getElementById('mob-np-desc');
+
+  if (mobBars) {
+  mobBars.style.display = data.isPlaying ? 'flex' : 'none';
+  if (data.isPlaying) {
+    // Force animation restart on each bar
+    mobBars.querySelectorAll('.mob-np-bar').forEach(bar => {
+      bar.style.animation = 'none';
+      bar.offsetHeight; // trigger reflow
+      bar.style.animation = '';
+    });
+  }
+}
+  if (mobLines) mobLines.style.display = data.isPlaying ? 'none' : 'flex';
+  if (mobDesc)  mobDesc.textContent    = data.track
+    ? (data.isPlaying ? `▶ ${data.track}` : `⏸ ${data.track}`)
+    : 'What I\'m listening to';
+}
+
+async function fetchNowPlaying() {
+  try {
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&format=json&limit=1&_=${Date.now()}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (!data.recenttracks || !data.recenttracks.track || !data.recenttracks.track.length) {
+      console.warn("No tracks found from Last.fm");
+      renderNowPlaying({
+        isPlaying: false,
+        track: "No recent tracks",
+        artist: "—",
+        albumArt: null,
+        songUrl: "https://open.spotify.com"
+      });
+      return;
+    }
+    
+    const track = data.recenttracks.track[0];
+    const isPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
+    
+    // Get album art (Last.fm returns array of images by size)
+    let albumArt = null;
+    if (track.image && track.image.length > 0) {
+      // Try to get a medium/large image (index 2 or 3)
+      albumArt = track.image[2]?.['#text'] || track.image[1]?.['#text'] || track.image[0]?.['#text'];
+    }
+
+    const trackData = {
+      isPlaying: isPlaying,
+      track: track.name || "Unknown Track",
+      artist: track.artist?.['#text'] || "Unknown Artist",
+      albumArt: albumArt,
+      songUrl: track.url || "https://open.spotify.com"
+    };
+    
+    renderNowPlaying(trackData);
+
+  } catch (err) {
+    console.error("Last.fm error:", err);
+    renderNowPlaying({
+      isPlaying: false,
+      track: "Error loading",
+      artist: "Check console",
+      albumArt: null,
+      songUrl: "https://open.spotify.com"
+    });
+  }
+}
+
+function openSpotifyModal() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) {
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    fetchNowPlaying(); // Refresh immediately
+    if (spotifyIntervalId) clearInterval(spotifyIntervalId);
+    spotifyIntervalId = setInterval(fetchNowPlaying, 30000);
+  }
+}
+
+function closeSpotifyModal() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+  if (spotifyIntervalId) {
+    clearInterval(spotifyIntervalId);
+    spotifyIntervalId = null;
+  }
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSpotifyModal();
+});
+
+// INITIAL FETCH - This was missing!
+document.addEventListener("DOMContentLoaded", () => {
+  fetchNowPlaying();
+  // Refresh every 30 seconds
+  spotifyIntervalId = setInterval(fetchNowPlaying, 30000);
+});
+
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  FOOTER — dynamic year
+  // ════════════════════════════════════════════════════════════════════════
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // ════════════════════════════════════════════════════════════════════════
+  //  SUN CLICK — navigate to Projects
+  // ══════════════════════════════════════════════════════════════════════
+  document.getElementById('sun').addEventListener('click', function(e) {
+    // ↓ PLACEHOLDER: Replace '#' with your actual projects URL ↓
+    const projectsUrl = '/projects'; // e.g. '/projects' or 'https://github.com/yourname'
+    if (projectsUrl === '#') {
+      e.preventDefault();
+      alert('🌟 Projects page coming soon! Update projectsUrl in the script.');
+    }
+    // else just let the <a href> handle it
+  });
+
+  </script>
+
+</body>
+</html>

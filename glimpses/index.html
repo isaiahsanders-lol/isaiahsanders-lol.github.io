@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HUNGNIR.WORK · Glimpses</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --space-black:  #03030a;
+      --star-white:   #e8e4ff;
+      --glow-blue:    #4fc3f7;
+      --glow-purple:  #b388ff;
+      --glow-gold:    #ffd54f;
+      --glow-pink:    #f48fb1;
+      --font-mono:    'Space Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--space-black);
+      color: var(--star-white);
+      font-family: var(--font-mono);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--glow-purple); color: #fff; }
+
+    #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .nebula { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.07; pointer-events: none; z-index: 1; }
+    .nebula-1 { width: 500px; height: 500px; background: var(--glow-purple); top: -150px; left: -100px; }
+    .nebula-2 { width: 400px; height: 400px; background: var(--glow-pink);   bottom: 10%; right: -100px; }
+    .nebula-3 { width: 300px; height: 300px; background: var(--glow-blue);   top: 50%; left: 15%; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(3,3,10,0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-logo { font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: var(--star-white); text-decoration: none; letter-spacing: 0.04em; }
+    .nav-logo span { color: var(--glow-gold); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232,228,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--star-white); }
+    .nav-links a.active { color: var(--glow-purple); }
+
+    .page { position: relative; z-index: 10; max-width: 1100px; margin: 0 auto; padding: 8rem 2rem 6rem; }
+
+    .page-label { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--glow-purple); margin-bottom: 0.8rem; display: block; }
+
+    .page-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.02em; color: var(--star-white);
+      margin-bottom: 0.6rem;
+    }
+    .page-heading em { font-style: normal; color: var(--glow-gold); }
+
+    .page-sub { font-size: 0.82rem; color: rgba(232,228,255,0.45); margin-bottom: 3rem; max-width: 55ch; }
+
+    .media-grid {
+      columns: 3;
+      column-gap: 1rem;
+    }
+
+    @media (max-width: 768px) { .media-grid { columns: 2; } }
+    @media (max-width: 480px) { .media-grid { columns: 1; } }
+
+    .media-item {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      animation: fadeUp 0.4s ease both;
+      cursor: pointer;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .media-item img,
+    .media-item video {
+      width: 100%;
+      display: block;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .media-item video { max-height: 400px; object-fit: cover; }
+
+    .media-caption {
+      padding: 0.75rem 0.9rem;
+      font-size: 0.65rem;
+      color: rgba(232,228,255,0.55);
+      line-height: 1.6;
+      font-style: italic;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .media-caption:empty { display: none; }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: rgba(232,228,255,0.2);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      border: 1px dashed rgba(255,255,255,0.06);
+      border-radius: 14px;
+    }
+
+    .empty-state p { margin-top: 0.5rem; font-size: 0.55rem; }
+
+    .lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(3,3,10,0.95);
+      backdrop-filter: blur(20px);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox img,
+    .lightbox video {
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 10px;
+      object-fit: contain;
+    }
+
+    .lightbox-caption {
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      font-style: italic;
+      color: rgba(232,228,255,0.5);
+      max-width: 60ch;
+      text-align: center;
+    }
+
+    .lightbox-close {
+      position: fixed; top: 1.5rem; right: 2rem;
+      font-size: 1.5rem; color: rgba(232,228,255,0.4);
+      cursor: pointer; transition: color 0.2s;
+      background: none; border: none; line-height: 1;
+    }
+    .lightbox-close:hover { color: #fff; }
+
+    footer {
+      position: relative; z-index: 10; text-align: center;
+      padding: 2rem; font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+    }
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--glow-purple); }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { gap: 1rem; }
+      .page { padding: 7rem 1.2rem 4rem; }
+    }
+
+
+    .media-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.6rem 0.9rem 0.4rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+  .media-caption {
+      font-size: 0.65rem;
+      color: rgba(232,228,255,0.55);
+      line-height: 1.6;
+      font-style: italic;
+      flex: 1;
+    }
+
+  .media-date {
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      color: var(--glow-gold);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      opacity: 0.7;
+  }
+
+.media-caption:empty { display: none; }
+
+
+.media-item {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.media-item:hover {
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(179, 136, 255, 0.3);
+  cursor: pointer;
+}
+
+.media-item img,
+.media-item video {
+  transition: filter 0.25s ease;
+}
+
+.media-item:hover img,
+.media-item:hover video {
+  filter: brightness(1.05) saturate(1.02);
+}
+
+
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="nebula nebula-1" aria-hidden="true"></div>
+  <div class="nebula nebula-2" aria-hidden="true"></div>
+  <div class="nebula nebula-3" aria-hidden="true"></div>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">✕</button>
+    <img id="lightbox-img" src="" alt="" style="display:none;" />
+    <video id="lightbox-video" controls style="display:none;"></video>
+    <p class="lightbox-caption" id="lightbox-caption"></p>
+  </div>
+
+  <nav>
+    <a class="nav-logo" href="/">hungnir<span>.work</span></a>
+    <ul class="nav-links">
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/blog">Projects</a></li>
+      <li><a href="/resume">Resume</a></li>
+      <li><a href="/glimpses" class="active">Glimpses</a></li>
+    </ul>
+  </nav>
+
+  <main class="page">
+    <span class="page-label">Glimpses</span>
+    <h1 class="page-heading">Frames from <em>the telescope.</em></h1>
+    <p class="page-sub">Glimpses into my life.</p>
+
+    <div class="media-grid" id="media-grid"></div>
+    <div class="empty-state" id="empty-state">
+      No glimpses yet.
+      <p>Check back soon.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="footer-year"></span> hungnir &nbsp;·&nbsp; <a href="/">← Back to orbit</a></p>
+  </footer>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [];
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      function makeStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++)
+          stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.5+0.2, speed: Math.random()*0.005+0.001, phase: Math.random()*Math.PI*2 });
+      }
+      function draw(t) {
+        ctx.clearRect(0,0,W,H);
+        stars.forEach(s => {
+          const a = 0.4 + 0.6*Math.abs(Math.sin(s.phase + t*s.speed));
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle = `rgba(232,228,255,${a})`; ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      resize(); makeStars(280);
+      window.addEventListener('resize', () => { resize(); makeStars(280); });
+      requestAnimationFrame(draw);
+    })();
+
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    let galleryItems = [
+  // Add your media here - edit this list directly
+      {
+        "src": "media/BLUEJAY.jpg",
+        "type": "image",
+        "caption": "Cute bird",
+        "date": "2026.04.15"
+      } // ADD A COMMA TO ADD MORE STUFF
+    ];
+
+    function loadGallery() {
+      renderGallery();
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById('media-grid');
+      const empty = document.getElementById('empty-state');
+      
+      grid.innerHTML = '';
+      
+      if (!galleryItems || galleryItems.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      
+      empty.style.display = 'none';
+
+      galleryItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'media-item';
+
+        let mediaElement;
+        if (item.type === 'video') {
+          mediaElement = document.createElement('video');
+          mediaElement.src = item.src;
+          mediaElement.controls = true;
+          mediaElement.muted = true;
+          mediaElement.loop = true;
+          mediaElement.playsInline = true;
+        } else {
+          mediaElement = document.createElement('img');
+          mediaElement.src = item.src;
+          mediaElement.alt = item.caption || '';
+          mediaElement.loading = 'lazy';
+        }
+
+        mediaElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openLightbox(item);
+        });
+
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'media-meta';
+
+        const captionDiv = document.createElement('div');
+        captionDiv.className = 'media-caption';
+        captionDiv.textContent = item.caption || '';
+
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'media-date';
+        dateDiv.textContent = item.date || '';
+
+        metaDiv.appendChild(captionDiv);
+        if (item.date) metaDiv.appendChild(dateDiv);
+
+        card.appendChild(mediaElement);
+        card.appendChild(metaDiv);
+        grid.appendChild(card);
+      });
+    }
+
+    function openLightbox(item) {
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const lbVideo = document.getElementById('lightbox-video');
+      const lbCap = document.getElementById('lightbox-caption');
+
+      if (item.type === 'video') {
+        lbVideo.src = item.src;
+        lbVideo.style.display = 'block';
+        lbImg.style.display = 'none';
+        if (lbVideo.pause) lbVideo.pause();
+      } else {
+        lbImg.src = item.src;
+        lbImg.style.display = 'block';
+        lbVideo.style.display = 'none';
+        if (lbVideo.pause) lbVideo.pause();
+      }
+      lbCap.textContent = item.caption || '';
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('lightbox');
+      const lbVideo = document.getElementById('lightbox-video');
+      lb.classList.remove('open');
+      if (lbVideo.pause) lbVideo.pause();
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    loadGallery();
+  </script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HUNGNIR.WORK · Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --space-black:  #03030a;
+      --star-white:   #e8e4ff;
+      --glow-blue:    #4fc3f7;
+      --glow-purple:  #b388ff;
+      --glow-gold:    #ffd54f;
+      --glow-green:   #69f0ae;
+      --glow-orange:  #ff8a65;
+      --font-mono:    'Space Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--space-black);
+      color: var(--star-white);
+      font-family: var(--font-mono);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--glow-purple); color: #fff; }
+
+    #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .nebula { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.07; pointer-events: none; z-index: 1; }
+    .nebula-1 { width: 500px; height: 500px; background: var(--glow-purple); top: -150px; left: -100px; }
+    .nebula-2 { width: 400px; height: 400px; background: var(--glow-blue); bottom: 10%; right: -100px; }
+    .nebula-3 { width: 350px; height: 350px; background: var(--glow-orange); top: 40%; left: 30%; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(3,3,10,0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-logo { font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: var(--star-white); text-decoration: none; letter-spacing: 0.04em; }
+    .nav-logo span { color: var(--glow-gold); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232,228,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--star-white); }
+    .nav-links a.active { color: var(--glow-purple); }
+
+    /* ── PAGE ── */
+    .page { position: relative; z-index: 10; max-width: 1000px; margin: 0 auto; padding: 8rem 2rem 6rem; }
+
+    .page-label { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--glow-purple); margin-bottom: 0.8rem; display: block; }
+
+    .page-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--star-white);
+      margin-bottom: 0.6rem;
+    }
+
+    .page-heading em { font-style: normal; color: var(--glow-gold); }
+
+    .page-sub {
+      font-size: 0.82rem;
+      color: rgba(232,228,255,0.45);
+      margin-bottom: 1.5rem;
+      max-width: 55ch;
+    }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 3rem;
+    }
+
+    .filter-tab {
+      padding: 0.35rem 0.9rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(232,228,255,0.45);
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-tab:hover,
+    .filter-tab.active {
+      border-color: var(--glow-purple);
+      color: var(--glow-purple);
+      background: rgba(179,136,255,0.07);
+    }
+
+    /* ── PROJECT GRID ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.2rem;
+    }
+
+    /* Large card — spans 7 columns */
+    .project-card {
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.02);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s, transform 0.25s, background 0.25s;
+      cursor: pointer;
+    }
+
+    .project-card:hover {
+      border-color: rgba(179,136,255,0.35);
+      background: rgba(179,136,255,0.03);
+      transform: translateY(-4px);
+    }
+
+    .project-card.large { grid-column: span 7; }
+    .project-card.small { grid-column: span 5; }
+    .project-card.full  { grid-column: span 12; flex-direction: row; }
+    .project-card.third { grid-column: span 4; }
+
+    /* Project image/preview area */
+    .project-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: rgba(179,136,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      flex-shrink: 0;
+      /* ↓ PLACEHOLDER: Replace with background-image: url('your-screenshot.png'); background-size: cover; */
+    }
+
+    .project-card.full .project-thumb {
+      width: 280px;
+      aspect-ratio: auto;
+      border-bottom: none;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .project-body {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .project-tag {
+      font-size: 0.48rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      background: rgba(79,195,247,0.1);
+      color: var(--glow-blue);
+      border: 1px solid rgba(79,195,247,0.2);
+    }
+
+    .project-tag.purple { background: rgba(179,136,255,0.1); color: var(--glow-purple); border-color: rgba(179,136,255,0.2); }
+    .project-tag.gold   { background: rgba(255,213,79,0.1);  color: var(--glow-gold);   border-color: rgba(255,213,79,0.2); }
+    .project-tag.green  { background: rgba(105,240,174,0.1); color: var(--glow-green);  border-color: rgba(105,240,174,0.2); }
+
+    .project-title {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 700;
+      color: var(--star-white);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .project-desc {
+      font-size: 0.7rem;
+      color: rgba(232,228,255,0.5);
+      line-height: 1.75;
+      flex: 1;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+
+    .project-link {
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .project-link:hover { color: #fff; }
+
+    .project-link.secondary { color: rgba(232,228,255,0.35); }
+    .project-link.secondary:hover { color: rgba(232,228,255,0.7); }
+
+    /* ── WIP / COMING SOON CARD ── */
+    .project-card.wip {
+      border-style: dashed;
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .project-card.wip .project-thumb {
+      font-size: 1.5rem;
+      opacity: 0.4;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 10; text-align: center;
+      padding: 2rem; font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+    }
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--glow-purple); }
+
+    @media (max-width: 768px) {
+      .project-card.large,
+      .project-card.small,
+      .project-card.full,
+      .project-card.third { grid-column: span 12; }
+      .project-card.full { flex-direction: column; }
+      .project-card.full .project-thumb { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { gap: 1rem; }
+      .page { padding: 7rem 1.2rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="nebula nebula-1" aria-hidden="true"></div>
+  <div class="nebula nebula-2" aria-hidden="true"></div>
+  <div class="nebula nebula-3" aria-hidden="true"></div>
+
+  <nav>
+    <a class="nav-logo" href="/">hungnir<span>.work</span></a>
+    <ul class="nav-links">
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/projects" class="active">Projects</a></li>
+      <li><a href="/resume">Resume</a></li>
+      <li><a href="/glimpses">Glimpses</a></li>
+    </ul>
+  </nav>
+
+  <main class="page">
+
+    <span class="page-label">Selected Work</span>
+    <h1 class="page-heading">Things I've <em>built.</em></h1>
+    <p class="page-sub">
+      <!-- ↓ PLACEHOLDER: Your portfolio tagline -->
+      A collection of projects, experiments, and things I'm proud enough to show.
+    </p>
+
+    <!-- ↓ OPTIONAL: Filter tabs — add/remove categories to match your work -->
+    <div class="filter-tabs">
+      <button class="filter-tab active">All</button>
+      <button class="filter-tab">Web</button>
+      <button class="filter-tab">Design</button>
+      <button class="filter-tab">Open Source</button>
+      <button class="filter-tab">Experiments</button>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- ══ PROJECT 1 — Large featured ══ -->
+      <!-- ↓ PLACEHOLDER: Update href, thumb emoji/image, tags, title, desc, links -->
+      <a class="project-card large" href="#" target="_blank" rel="noopener">
+        <div class="project-thumb">🚀</div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Web</span>
+            <span class="project-tag purple">Design</span>
+          </div>
+          <h2 class="project-title">Your Featured Project Name</h2>
+          <p class="project-desc">
+            A short description of what this project is and what problem it solves. Two to three sentences is ideal — enough to give context without overwhelming.
+          </p>
+          <div class="project-links">
+            <span class="project-link">↗ Live Site</span>
+            <span class="project-link secondary">GitHub →</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ══ PROJECT 2 — Small ══ -->
+      <a class="project-card small" href="#" target="_blank" rel="noopener">
+        <div class="project-thumb">✦</div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag green">Open Source</span>
+          </div>
+          <h2 class="project-title">Project Name</h2>
+          <p class="project-desc">Short description of what this does and why it exists.</p>
+          <div class="project-links">
+            <span class="project-link">↗ View Project</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ══ PROJECT 3 — Full width ══ -->
+      <a class="project-card full" href="#" target="_blank" rel="noopener">
+        <div class="project-thumb">🎨</div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Design</span>
+            <span class="project-tag gold">Case Study</span>
+          </div>
+          <h2 class="project-title">A Wider Project or Case Study</h2>
+          <p class="project-desc">
+            This layout works well for projects with more to say — a case study, a detailed build, or something you want to give more room to breathe. Use it for your most substantial work.
+          </p>
+          <div class="project-links">
+            <span class="project-link">↗ Read Case Study</span>
+            <span class="project-link secondary">Behance →</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ══ PROJECT 4, 5, 6 — Thirds ══ -->
+      <a class="project-card third" href="#" target="_blank" rel="noopener">
+        <div class="project-thumb">⚡</div>
+        <div class="project-body">
+          <div class="project-tags"><span class="project-tag purple">Experiment</span></div>
+          <h2 class="project-title">Project Name</h2>
+          <p class="project-desc">Short description here.</p>
+          <div class="project-links"><span class="project-link">↗ View</span></div>
+        </div>
+      </a>
+
+      <a class="project-card third" href="#" target="_blank" rel="noopener">
+        <div class="project-thumb">🌐</div>
+        <div class="project-body">
+          <div class="project-tags"><span class="project-tag">Web</span></div>
+          <h2 class="project-title">Project Name</h2>
+          <p class="project-desc">Short description here.</p>
+          <div class="project-links"><span class="project-link">↗ View</span></div>
+        </div>
+      </a>
+
+      <!-- ↓ WIP placeholder — remove once you have a real 6th project -->
+      <div class="project-card third wip">
+        <div class="project-thumb">⋯</div>
+        <div class="project-body">
+          <h2 class="project-title">Coming Soon</h2>
+          <p class="project-desc">Something is brewing.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="footer-year"></span> hungnir &nbsp;·&nbsp; <a href="/">← Back to orbit</a></p>
+  </footer>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [];
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      function makeStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++) {
+          stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.5+0.2, speed: Math.random()*0.005+0.001, phase: Math.random()*Math.PI*2 });
+        }
+      }
+      function draw(t) {
+        ctx.clearRect(0,0,W,H);
+        stars.forEach(s => {
+          const a = 0.4 + 0.6*Math.abs(Math.sin(s.phase + t*s.speed));
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle = `rgba(232,228,255,${a})`; ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      resize(); makeStars(280);
+      window.addEventListener('resize', () => { resize(); makeStars(280); });
+      requestAnimationFrame(draw);
+    })();
+
+    // Filter tabs (visual only — add real filtering logic if needed)
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

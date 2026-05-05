@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isaiah Sanders · cv</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --space-black:  #03030a;
+      --nebula-deep:  #07051a;
+      --star-white:   #e8e4ff;
+      --glow-blue:    #4fc3f7;
+      --glow-purple:  #b388ff;
+      --glow-gold:    #ffd54f;
+      --glow-pink:    #f48fb1;
+      --glow-green:   #69f0ae;
+      --font-mono:    'Space Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--space-black);
+      color: var(--star-white);
+      font-family: var(--font-mono);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--glow-purple); color: #fff; }
+
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .nebula {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .nebula-1 { width: 500px; height: 500px; background: var(--glow-purple); top: -150px; left: -100px; }
+    .nebula-2 { width: 400px; height: 400px; background: var(--glow-blue); bottom: 10%; right: -100px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(3,3,10,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--star-white);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-logo span { color: var(--glow-gold); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(232,228,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--star-white); }
+    .nav-links a.active { color: var(--glow-purple); }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      position: relative;
+      z-index: 10;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 8rem 2rem 6rem;
+    }
+
+    /* ── HEADER ── */
+    .resume-header {
+      margin-bottom: 3.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding-bottom: 2.5rem;
+    }
+
+    .page-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .resume-name {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--star-white);
+      margin-bottom: 0.4rem;
+    }
+
+    .resume-name em {
+      font-style: normal;
+      color: var(--glow-gold);
+    }
+
+    .resume-title {
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      color: rgba(232,228,255,0.5);
+      margin-bottom: 1.2rem;
+    }
+
+    .resume-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .resume-contacts a {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--glow-blue);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .resume-contacts a:hover { color: #fff; }
+
+    /* ── SECTION ── */
+    .r-section {
+      margin-bottom: 3rem;
+    }
+
+    .r-section-title {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .r-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(179,136,255,0.2);
+    }
+
+    /* ── EXPERIENCE ENTRY (also used for projects) ── */
+    .r-entry {
+      margin-bottom: 2rem;
+      padding-left: 1rem;
+      border-left: 2px solid rgba(179,136,255,0.15);
+      transition: border-color 0.2s;
+    }
+
+    .r-entry:hover {
+      border-color: var(--glow-purple);
+    }
+
+    .r-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .r-role {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--star-white);
+    }
+
+    .r-date {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--glow-gold);
+      white-space: nowrap;
+    }
+
+    .r-company {
+      font-size: 0.7rem;
+      color: var(--glow-blue);
+      margin-bottom: 0.6rem;
+    }
+
+    .r-desc {
+      font-size: 0.78rem;
+      color: rgba(232,228,255,0.65);
+      line-height: 1.8;
+    }
+
+    .r-desc ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .r-desc ul li::before {
+      content: '→ ';
+      color: var(--glow-purple);
+      opacity: 0.6;
+    }
+
+    /* skills grid + inline skills table alternative */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .skill-tag {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: rgba(232,228,255,0.7);
+      background: rgba(255,255,255,0.03);
+      text-align: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .skill-tag:hover {
+      border-color: var(--glow-purple);
+      color: var(--star-white);
+    }
+
+    /* skill category line (like latex tabular style) */
+    .skill-line {
+      font-size: 0.72rem;
+      margin-bottom: 0.65rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.8rem;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+      padding-bottom: 0.5rem;
+    }
+    .skill-cat {
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--glow-blue);
+      min-width: 110px;
+      letter-spacing: 0.02em;
+    }
+    .skill-items {
+      color: rgba(232,228,255,0.75);
+      line-height: 1.5;
+    }
+
+    /* EDUCATION custom blocks */
+    .r-edu {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 1rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .r-edu:hover { border-color: rgba(179,136,255,0.3); }
+
+    .r-edu-degree {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--star-white);
+    }
+
+    .r-edu-school {
+      font-size: 0.68rem;
+      color: var(--glow-blue);
+      margin-top: 0.2rem;
+    }
+
+    .r-edu-year {
+      font-size: 0.58rem;
+      color: var(--glow-gold);
+      letter-spacing: 0.1em;
+    }
+
+    /* DOWNLOAD BUTTON */
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.4rem;
+      border: 1px solid rgba(179,136,255,0.4);
+      border-radius: 50px;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    .download-btn:hover {
+      background: rgba(179,136,255,0.1);
+      border-color: var(--glow-purple);
+      color: #fff;
+    }
+
+    /* inline internship + research line */
+    .internship-block {
+      padding-left: 1rem;
+      border-left: 2px solid rgba(179,136,255,0.15);
+      margin-bottom: 1.5rem;
+    }
+    .internship-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--star-white);
+    }
+    .internship-meta {
+      font-size: 0.7rem;
+      color: var(--glow-blue);
+    }
+
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--glow-purple); }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { gap: 1rem; }
+      .page { padding: 7rem 1.2rem 4rem; }
+      .skill-line { flex-direction: column; gap: 0.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="nebula nebula-1" aria-hidden="true"></div>
+  <div class="nebula nebula-2" aria-hidden="true"></div>
+
+  <nav>
+    <a class="nav-logo" href="/">hungnir<span>.work</span></a>
+    <ul class="nav-links">
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/projects">Projects</a></li>
+      <li><a href="/resume" class="active">Resume</a></li>
+      <li><a href="/glimpses">Glimpses</a></li>
+    </ul>
+  </nav>
+
+  <main class="page">
+
+    <!-- ══ HEADER: name + contacts from LaTeX ══ -->
+    <header class="resume-header">
+      <span class="page-label">Curriculum Vitae</span>
+      <h1 class="resume-name">
+        Isaiah<em> Sanders.</em>
+      </h1>
+      <p class="resume-title">
+        Agricultural & Biological Engineering · UIUC
+      </p>
+      <div class="resume-contacts">
+        <a href="mailto:isaiahs3@illinois.edu">isaiahs3@illinois.edu</a>
+        <a href="tel:+18473056987">+1 847 305 6987</a>
+        <a href="#">github.com/isaiahsanders-lol</a>
+        <a href="#">https://www.linkedin.com/in/isaiah-sanders-40742b386/</a>
+      </div>
+      <!-- PDF download link (kept as placeholder) -->
+      <a class="download-btn" href="/resume.pdf" download>↓ Download PDF</a>
+    </header>
+
+    <!-- ══ EDUCATION SECTION (Bachelor + Math minor) ══ -->
+    <section class="r-section">
+      <h2 class="r-section-title">Education</h2>
+      <div class="r-edu">
+        <div>
+          <div class="r-edu-degree">B.S. Agricultural & Biological Engineering</div>
+          <div class="r-edu-school">Grainger College of Engineering · University of Illinois Urbana-Champaign</div>
+          <div class="r-edu-school" style="margin-top: 0.2rem;">Mathematics Minor</div>
+        </div>
+        <div class="r-edu-year">Aug 2024 — May 2028</div>
+      </div>
+    </section>
+
+    <!-- ══ SKILLS + INTERESTS (from LaTeX tabular) ══ -->
+    <section class="r-section">
+      <h2 class="r-section-title">Skills & Interests</h2>
+      <div class="skill-line">
+        <span class="skill-cat">Interests</span>
+        <span class="skill-items">Design, Urban Agriculture, CAD/CAE, Networking, Optimization, Dynamics, Modeling and Simulation, Computer Vision, Machine Learning, Linux, Docker</span>
+      </div>
+      <div class="skill-line">
+        <span class="skill-cat">Design Software</span>
+        <span class="skill-items">Autodesk Fusion, MATLAB</span>
+      </div>
+      <div class="skills-grid" style="margin-top: 0.8rem;">
+        <div class="skill-tag">Computer Vision</div>
+        <div class="skill-tag">Precision Agriculture</div>
+        <div class="skill-tag">Stress Analysis</div>
+        <div class="skill-tag">Fusion 360</div>
+        <div class="skill-tag">Python/ML</div>
+        <div class="skill-tag">Docker/Linux</div>
+        <div class="skill-tag">Bash Scripting</div>
+        <div class="skill-tag">SWOT Analysis</div>
+      </div>
+    </section>
+
+    <!-- ══ PROJECTS SECTION (from LaTeX projects) ══ -->
+    <section class="r-section">
+      <h2 class="r-section-title">Projects</h2>
+
+      <!-- Project 1: CV model precision ag -->
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <span class="r-role">Training & Development of a Computer Vision Model for Precision Agriculture</span>
+          <span class="r-date">Jan 2026 — May 2026</span>
+        </div>
+        <div class="r-company">Undergraduate Research · Dr. Sunoj Shajahan</div>
+        <div class="r-desc">
+          <ul>
+            <li>Developed a streamlining process for training computer vision models on large datasets to aid in model tuning.</li>
+            <li>Compared runtime of popular CVML models to determine optimal architecture for object detection in precision agriculture.</li>
+            <li>Led development of a script to perform mass augmentations on datasets, increasing available training data for CV models.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Project 2: Bike frame stress analysis -->
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <span class="r-role">Design and Stress Analysis of Bike Frame in Autodesk Fusion</span>
+          <span class="r-date">April 2026</span>
+        </div>
+        <div class="r-company">Minor Project · Curriculum</div>
+        <div class="r-desc">
+          <ul>
+            <li>Performed shape and stress analysis on bike frames to minimize material usage while optimizing safety factor.</li>
+            <li>Determined proper load applications through experimental design to ensure accurate simulation.</li>
+            <li>Generated multiple variants of the bike frame for analytical comparison and design iteration.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Project 3: Marketing campaign + Digital Product Passport -->
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <span class="r-role">Design Marketing Campaign for International Sustainable Fashion Company</span>
+          <span class="r-date">Aug 2024 — Dec 2024</span>
+        </div>
+        <div class="r-company">Major Project · MOVIN fashion company</div>
+        <div class="r-desc">
+          <ul>
+            <li>Performed a SWOT analysis on MOVIN to determine strategic improvements for company outreach.</li>
+            <li>Designed a Digital Product Passport system to fingerprint manufacturing information of products.</li>
+            <li>Gained international experience collaborating with engineering students and workers in Brazil.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Project 4: Home Server Design (hobby) -->
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <span class="r-role">Home Server Design</span>
+          <span class="r-date">Sep 2025 — Present</span>
+        </div>
+        <div class="r-company">Hobby project · self-hosted infrastructure</div>
+        <div class="r-desc">
+          <ul>
+            <li>Converted an old laptop into a Linux-based home server to host locally hosted software and a website.</li>
+            <li>Performed troubleshooting to ensure system stability and reduce downtime.</li>
+            <li>Gained hands-on experience with Linux systems, Docker, and bash scripting.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ INTERNSHIP / UNDERGRADUATE RESEARCH (from LaTeX) ══ -->
+    <section class="r-section">
+      <h2 class="r-section-title">Internship / Research</h2>
+      <div class="internship-block">
+        <div class="internship-title">Undergraduate Research under Dr. Sunoj Shajahan</div>
+        <div class="internship-meta">Department of Agricultural and Biological Engineering · UIUC, Illinois</div>
+        <div class="r-desc" style="margin-top: 0.4rem;">
+          <ul>
+            <li>Focused on computer vision pipelines and dataset augmentation for precision agriculture.</li>
+            <li>Worked directly with faculty on model efficiency benchmarks and agricultural imaging.</li>
+          </ul>
+        </div>
+        <div class="r-date" style="margin-top: 0.4rem; display: inline-block;">Jan 2026 — May 2026</div>
+      </div>
+    </section>
+
+    <!-- Optional: additional technical strengths / trainings (mirror LaTeX style remaining) -->
+    <section class="r-section">
+      <h2 class="r-section-title">Additional Training & Achievements</h2>
+      <div class="r-entry" style="margin-bottom: 1.2rem;">
+        <div class="r-desc">
+          <ul>
+            <li><strong style="color:var(--star-white)">Design Optimization & Finite Element Analysis</strong> – applied to mechanical systems and agricultural machinery.</li>
+            <li><strong style="color:var(--star-white)">International Collaboration</strong> – MOVIN fashion project with engineering teams in Brazil.</li>
+            <li><strong style="color:var(--star-white)">Linux Server Administration</strong> – self-hosted services, docker compose, networking basics.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="footer-year"></span> Isaiah Sanders &nbsp;·&nbsp; Isaiah Sanders · Agricultural and Biological Engineering</p>
+  </footer>
+
+  <script>
+    // Starfield animation (same as original, tranquil background)
+    (function() {
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [];
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      function makeStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++) {
+          stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.5+0.2, speed: Math.random()*0.005+0.001, phase: Math.random()*Math.PI*2 });
+        }
+      }
+      function draw(t) {
+        ctx.clearRect(0,0,W,H);
+        stars.forEach(s => {
+          const a = 0.4 + 0.6*Math.abs(Math.sin(s.phase + t*s.speed));
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle = `rgba(232,228,255,${a})`; ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      resize(); makeStars(260);
+      window.addEventListener('resize', () => { resize(); makeStars(260); });
+      requestAnimationFrame(draw);
+    })();
+
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
