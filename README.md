@@ -1,2 +1,2 @@
 # isaiahsanders-lol.github.io
-website
+Website
