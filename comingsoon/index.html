@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isaiah Sanders — Coming Soon</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --space-black:   #03030a;
+      --nebula-deep:   #07051a;
+      --star-white:    #e8e4ff;
+      --glow-blue:     #4fc3f7;
+      --glow-purple:   #b388ff;
+      --glow-gold:     #ffd54f;
+      --glow-orange:   #ff8a65;
+      --glow-green:    #69f0ae;
+      --glow-pink:     #f48fb1;
+      --font-mono:     'Space Mono', monospace;
+      --font-display:  'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { overflow-x: hidden; }
+
+    body {
+      background: var(--space-black);
+      color: var(--star-white);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    ::selection { background: var(--glow-purple); color: #fff; }
+
+    /* ── Starfield ── */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Nebula blobs ── */
+    .nebula {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .nebula-1 { width: 500px; height: 500px; background: var(--glow-purple); top: -150px; left: -100px; }
+    .nebula-2 { width: 400px; height: 400px; background: var(--glow-blue);   bottom: 10%; right: -100px; }
+    .nebula-3 { width: 350px; height: 350px; background: var(--glow-gold);   top: 50%;   left: 30%; }
+
+    /* ── Comet canvas ── */
+    #comet-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── Main content wrapper ── */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(2rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+      max-width: 780px;
+      width: 100%;
+    }
+
+    /* ── Orbital sun graphic ── */
+    .sun-wrap {
+      position: relative;
+      width: clamp(100px, 18vw, 140px);
+      height: clamp(100px, 18vw, 140px);
+      margin-bottom: 3rem;
+    }
+
+    .sun {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        #fffde7 0%, #fff176 25%, #ffd54f 50%, #ff8f00 75%, #e65100 100%);
+      box-shadow:
+        0 0 30px 10px rgba(255,213,79,0.6),
+        0 0 60px 20px rgba(255,143,0,0.4),
+        0 0 100px 40px rgba(255,111,0,0.2),
+        inset 0 0 20px rgba(255,255,255,0.3);
+      animation: sun-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes sun-pulse {
+      0%, 100% {
+        box-shadow: 0 0 30px 10px rgba(255,213,79,0.6),
+                    0 0 60px 20px rgba(255,143,0,0.4),
+                    0 0 100px 40px rgba(255,111,0,0.2),
+                    inset 0 0 20px rgba(255,255,255,0.3);
+      }
+      50% {
+        box-shadow: 0 0 42px 16px rgba(255,213,79,0.8),
+                    0 0 80px 28px rgba(255,143,0,0.5),
+                    0 0 130px 55px rgba(255,111,0,0.25),
+                    inset 0 0 26px rgba(255,255,255,0.4);
+      }
+    }
+
+    /* Orbiting dot */
+    .orbit-ring {
+      position: absolute;
+      inset: -28px;
+      border-radius: 50%;
+      border: 1px solid rgba(180,170,255,0.2);
+      animation: spin-ring 8s linear infinite;
+    }
+
+    .orbit-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--glow-purple);
+      border-radius: 50%;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px 4px rgba(179,136,255,0.6);
+    }
+
+    .orbit-ring-2 {
+      position: absolute;
+      inset: -50px;
+      border-radius: 50%;
+      border: 1px solid rgba(79,195,247,0.12);
+      animation: spin-ring 14s linear infinite reverse;
+    }
+
+    .orbit-dot-2 {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: var(--glow-blue);
+      border-radius: 50%;
+      bottom: -3.5px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px 3px rgba(79,195,247,0.5);
+    }
+
+    @keyframes spin-ring {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── Eyebrow label ── */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--glow-purple);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.3s;
+    }
+
+    /* ── Main title ── */
+    .title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--star-white);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fade-up 0.9s ease forwards 0.5s;
+    }
+
+    .title span {
+      color: var(--glow-gold);
+      text-shadow: 0 0 30px rgba(255,213,79,0.4);
+    }
+
+    /* ── Subtitle / domain ── */
+    .subtitle {
+      font-family: var(--font-mono);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: rgba(232,228,255,0.45);
+      letter-spacing: 0.12em;
+      margin-bottom: 2.8rem;
+      opacity: 0;
+      animation: fade-up 0.9s ease forwards 0.65s;
+    }
+
+    /* ── Description ── */
+    .description {
+      font-size: clamp(0.78rem, 1.8vw, 0.93rem);
+      line-height: 1.9;
+      color: rgba(232,228,255,0.65);
+      max-width: 52ch;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fade-up 1s ease forwards 0.8s;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glow-purple), transparent);
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fade-up 1s ease forwards 0.9s;
+    }
+
+    /* ── Coming Soon badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 1.4rem;
+      border: 1px solid rgba(255,213,79,0.35);
+      border-radius: 50px;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--glow-gold);
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fade-up 1s ease forwards 1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,213,79,0.04);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--glow-gold);
+      border-radius: 50%;
+      animation: blink-dot 1.8s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    /* ── Contact links ── */
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fade-up 1s ease forwards 1.15s;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.3rem;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.025);
+      color: rgba(232,228,255,0.65);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: border-color 0.22s, background 0.22s, color 0.22s, transform 0.22s;
+    }
+
+    .link-item:hover {
+      border-color: rgba(179,136,255,0.45);
+      background: rgba(179,136,255,0.07);
+      color: var(--star-white);
+      transform: translateY(-2px);
+    }
+
+    .link-icon { font-size: 0.9rem; }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.5rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+      opacity: 0;
+      animation: fade-up 1s ease forwards 1.35s;
+    }
+
+    footer a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--glow-purple); }
+
+    /* ── Animations ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Scroll pulse line ── */
+    .pulse-line {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--glow-purple), transparent);
+      opacity: 0;
+      animation: pulse-line 3s ease-in-out infinite 1.5s, fade-in-footer 1s ease forwards 1.4s;
+      z-index: 10;
+    }
+
+    @keyframes pulse-line {
+      0%, 100% { opacity: 0.15; }
+      50%       { opacity: 0.55; }
+    }
+    @keyframes fade-in-footer {
+      to { opacity: 1; }
+    }
+
+    /* ── Mobile adjustments ── */
+    @media (max-width: 480px) {
+      .sun-wrap { margin-bottom: 2.2rem; }
+      .links { flex-direction: column; align-items: center; }
+      .link-item { width: 100%; max-width: 260px; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <canvas id="comet-canvas" aria-hidden="true"></canvas>
+
+  <div class="nebula nebula-1" aria-hidden="true"></div>
+  <div class="nebula nebula-2" aria-hidden="true"></div>
+  <div class="nebula nebula-3" aria-hidden="true"></div>
+
+  <main class="container">
+
+    <!-- Sun graphic with orbiting dots -->
+    <div class="sun-wrap" aria-hidden="true">
+      <div class="orbit-ring-2">
+        <div class="orbit-dot-2"></div>
+      </div>
+      <div class="orbit-ring">
+        <div class="orbit-dot"></div>
+      </div>
+      <div class="sun"></div>
+    </div>
+
+    <p class="eyebrow">Transmitting from orbit</p>
+
+    <h1 class="title">Isaiah <span>Sanders</span></h1>
+    <p class="subtitle">isaiahsanders.work &middot; Beyond the Stars</p>
+
+    <div class="badge">
+      <span class="badge-dot" aria-hidden="true"></span>
+      Something is launching soon
+    </div>
+
+    <p class="description">
+      A hobbyist designer and engineering student with an eye for automation,
+      precision agriculture, computer vision, and machine learning.
+      The full site is being assembled — check back soon.
+    </p>
+
+
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="footer-year"></span> Isaiah Sanders &mdash; all systems nominal</p>
+  </footer>
+
+  <div class="pulse-line" aria-hidden="true"></div>
+
+  <script>
+    // ── Footer year ──
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // ── Starfield ──
+    (function () {
+      const canvas = document.getElementById('starfield');
+      const ctx    = canvas.getContext('2d');
+      let stars    = [];
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function initStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++) {
+          stars.push({
+            x:     Math.random() * canvas.width,
+            y:     Math.random() * canvas.height,
+            r:     Math.random() * 1.4 + 0.2,
+            alpha: Math.random() * 0.7 + 0.2,
+            da:    (Math.random() - 0.5) * 0.006,
+          });
+        }
+      }
+
+      function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (const s of stars) {
+          s.alpha = Math.max(0.1, Math.min(0.95, s.alpha + s.da));
+          if (s.alpha <= 0.1 || s.alpha >= 0.95) s.da *= -1;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(232,228,255,${s.alpha})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(drawStars);
+      }
+
+      resize();
+      initStars(280);
+      drawStars();
+      window.addEventListener('resize', () => { resize(); initStars(280); });
+    })();
+
+    // ── Comets ──
+    (function () {
+      const canvas = document.getElementById('comet-canvas');
+      const ctx    = canvas.getContext('2d');
+      let comets   = [];
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function spawnComet() {
+        const angle = Math.random() * Math.PI * 0.4 + Math.PI * 0.05;
+        comets.push({
+          x:      -50,
+          y:      Math.random() * canvas.height * 0.6,
+          vx:     Math.cos(angle) * (8 + Math.random() * 6),
+          vy:     Math.sin(angle) * (3 + Math.random() * 4),
+          len:    120 + Math.random() * 80,
+          alpha:  0.8 + Math.random() * 0.2,
+          width:  1 + Math.random() * 1.2,
+        });
+      }
+
+      let lastComet = 0;
+      function drawComets(ts) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ts - lastComet > 3500 + Math.random() * 4000) {
+          spawnComet();
+          lastComet = ts;
+        }
+        comets = comets.filter(c => c.x < canvas.width + 200 && c.y < canvas.height + 200);
+        for (const c of comets) {
+          c.x += c.vx;
+          c.y += c.vy;
+          const grad = ctx.createLinearGradient(c.x, c.y, c.x - c.len * Math.cos(Math.atan2(c.vy, c.vx)), c.y - c.len * Math.sin(Math.atan2(c.vy, c.vx)));
+          grad.addColorStop(0, `rgba(255,255,255,${c.alpha})`);
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.beginPath();
+          ctx.moveTo(c.x, c.y);
+          ctx.lineTo(c.x - c.len * Math.cos(Math.atan2(c.vy, c.vx)), c.y - c.len * Math.sin(Math.atan2(c.vy, c.vx)));
+          ctx.strokeStyle = grad;
+          ctx.lineWidth   = c.width;
+          ctx.stroke();
+        }
+        requestAnimationFrame(drawComets);
+      }
+
+      resize();
+      requestAnimationFrame(drawComets);
+      window.addEventListener('resize', resize);
+    })();
+  </script>
+
+</body>
+</html>
